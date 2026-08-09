@@ -2,7 +2,7 @@
 'use client'
 
 import { toPng } from 'html-to-image'
-import type { CreatorState } from './types'
+import { type CreatorState, BUILDER_ID } from './types'
 
 // Set to true locally if you need to debug an export failure — logs
 // pre-capture and onclone DOM snapshots to the console. Off by default so
@@ -150,7 +150,8 @@ export async function exportBothAssets(
 }
 
 export function shareOnX() {
-  const text = '🌅 Builder mode: ONLINE.\nOfficially heading to HackerHouse Goa 2026.\nReady to build, ship, and meet incredible founders by the sea. 🌊🚀\n\n#HHGoa2026 #BuildInGoa #FrameInGoa'
+  const builderId = BUILDER_ID.split('').reverse().join('').slice(0, 8).toUpperCase()
+  const text = `Just created my official HH Goa 2026 Builder ID & Profile Frame. 🚀\n\nCreate yours:\nhttps://hhbuilder.vercel.app\n\n#HHGoa2026 #FrameInGoa\n\nhttps://hhbuilder.vercel.app/share/${builderId}`
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
   window.open(url, '_blank', 'noopener,noreferrer')
 }
