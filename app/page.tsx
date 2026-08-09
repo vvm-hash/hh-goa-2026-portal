@@ -1,6 +1,7 @@
+// app/page.tsx
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Aurora } from '@/components/creator/aurora'
 import { CropScreen } from '@/components/creator/crop-screen'
 import { CustomizeScreen } from '@/components/creator/customize-screen'
@@ -18,6 +19,11 @@ export default function Page() {
   const [screen, setScreen] = useState<Screen>('landing')
   const [state, setState] = useState<CreatorState>(DEFAULT_STATE)
   const [exported, setExported] = useState(false)
+
+  // Refs to the preview DOM elements — passed to PreviewScreen to attach,
+  // then read by SuccessModal to capture exactly what the user sees.
+  const profileFrameRef = useRef<HTMLDivElement>(null)
+  const builderCardRef = useRef<HTMLDivElement>(null)
 
   const update = (patch: Partial<CreatorState>) =>
     setState((prev) => ({ ...prev, ...patch }))
@@ -69,6 +75,8 @@ export default function Page() {
               state={state}
               onBack={() => setScreen('customize')}
               onExport={() => setExported(true)}
+              profileFrameRef={profileFrameRef}
+              builderCardRef={builderCardRef}
             />
           )}
         </div>
@@ -76,8 +84,11 @@ export default function Page() {
 
       <SuccessModal
         open={exported}
+        state={state}
         onClose={() => setExported(false)}
         onRestart={reset}
+        profileFrameRef={profileFrameRef}
+        builderCardRef={builderCardRef}
       />
     </>
   )

@@ -6,56 +6,50 @@ export type StepKey = 'upload' | 'crop' | 'customize' | 'preview'
 export const STEP_ORDER: StepKey[] = ['upload', 'crop', 'customize', 'preview']
 
 const LABELS: Record<StepKey, string> = {
-  upload: 'Upload',
-  crop: 'Crop',
-  customize: 'Customize',
-  preview: 'Preview',
+  upload: 'UPLOAD',
+  crop: 'CROP',
+  customize: 'CUSTOMIZE',
+  preview: 'PREVIEW',
 }
 
 export function StepIndicator({ current }: { current: StepKey }) {
   const currentIndex = STEP_ORDER.indexOf(current)
 
   return (
-    <nav aria-label="Progress" className="flex items-center justify-center">
-      <ol className="flex items-center gap-1.5 rounded-full border border-[#30363D] bg-[#161B22]/70 px-2 py-1.5 backdrop-blur-md">
-        {STEP_ORDER.map((step, i) => {
-          const state =
-            i < currentIndex ? 'done' : i === currentIndex ? 'active' : 'upcoming'
-          return (
-            <li key={step} className="flex items-center gap-1.5">
-              <div
+    <nav aria-label="Progress" className="flex items-center gap-px">
+      {STEP_ORDER.map((step, i) => {
+        const state = i < currentIndex ? 'done' : i === currentIndex ? 'active' : 'upcoming'
+        return (
+          <div key={step} className="flex items-center">
+            <div
+              className={cn(
+                'flex items-center gap-1.5 border-2 px-2.5 py-1 font-mono text-[9px] font-bold tracking-[0.18em] transition-all',
+                state === 'active' && 'border-[#FFE600] bg-[#FFE600] text-[#111111]',
+                state === 'done'   && 'border-[#F7F3E8]/40 bg-[#F7F3E8]/10 text-[#F7F3E8]/60',
+                state === 'upcoming' && 'border-[#F7F3E8]/20 bg-transparent text-[#F7F3E8]/30',
+              )}
+            >
+              <span
                 className={cn(
-                  'flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-medium transition-colors',
-                  state === 'active' && 'bg-[#F0F6FC]/[0.07] text-[#F0F6FC]',
-                  state === 'done' && 'text-[#8B949E]',
-                  state === 'upcoming' && 'text-[#6E7681]',
+                  'grid size-3.5 place-items-center font-mono text-[8px] font-bold leading-none',
                 )}
               >
-                <span
-                  className={cn(
-                    'grid size-4 place-items-center rounded-full font-mono text-[9px] leading-none transition-colors',
-                    state === 'active' && 'bg-[#2EA043] text-[#F0F6FC]',
-                    state === 'done' && 'bg-[#3FB950]/20 text-[#3FB950]',
-                    state === 'upcoming' && 'border border-[#30363D] text-[#6E7681]',
-                  )}
-                >
-                  {state === 'done' ? '✓' : i + 1}
-                </span>
-                <span className="hidden sm:inline">{LABELS[step]}</span>
-              </div>
-              {i < STEP_ORDER.length - 1 && (
-                <span
-                  aria-hidden
-                  className={cn(
-                    'h-px w-3 sm:w-5',
-                    i < currentIndex ? 'bg-[#3FB950]/40' : 'bg-[#30363D]',
-                  )}
-                />
-              )}
-            </li>
-          )
-        })}
-      </ol>
+                {state === 'done' ? '✓' : `0${i + 1}`}
+              </span>
+              <span className="hidden sm:inline">{LABELS[step]}</span>
+            </div>
+            {i < STEP_ORDER.length - 1 && (
+              <span
+                aria-hidden
+                className={cn(
+                  'h-px w-4',
+                  i < currentIndex ? 'bg-[#FFE600]/60' : 'bg-[#F7F3E8]/15',
+                )}
+              />
+            )}
+          </div>
+        )
+      })}
     </nav>
   )
 }

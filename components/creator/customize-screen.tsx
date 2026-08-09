@@ -16,7 +16,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block font-mono text-[10px] tracking-[0.16em] text-muted-foreground">
+      <span className="mb-1.5 block font-mono text-[9px] font-bold tracking-[0.2em] text-[#5A5A4A] uppercase">
         {label}
       </span>
       {children}
@@ -36,23 +36,23 @@ export function CustomizeScreen({
   onNext: () => void
 }) {
   const inputClass =
-    'w-full rounded-xl border border-border bg-secondary/40 px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-ring focus:bg-secondary'
+    'w-full border-2 border-[#111111] bg-white px-4 py-2.5 text-sm font-medium text-[#111111] outline-none transition-all placeholder:text-[#5A5A4A]/50 focus:border-[#0B6E3D] focus:shadow-[0_0_0_2px_rgba(11,110,61,0.15)]'
 
   return (
     <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+      {/* step header */}
       <div className="animate-rise">
-        <p className="font-mono text-xs tracking-[0.2em] text-muted-foreground">
-          STEP 03
-        </p>
-        <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+        <span className="sticker-tag bg-[#FF0A7A] text-white">03 / CUSTOMIZE</span>
+        <h1 className="mt-4 text-3xl font-black tracking-tight text-[#111111] sm:text-4xl">
           Make it yours
         </h1>
       </div>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] lg:gap-16">
         {/* controls */}
-        <div className="animate-rise [animation-delay:60ms] space-y-10">
-          <div className="grid gap-6 sm:grid-cols-2">
+        <div className="animate-rise [animation-delay:60ms] space-y-7">
+
+          <div className="grid gap-4 sm:grid-cols-2">
             <Field label="DISPLAY NAME">
               <input
                 className={inputClass}
@@ -83,35 +83,32 @@ export function CustomizeScreen({
             />
           </Field>
 
+          {/* builder title */}
           <div>
-            <span className="mb-2 block font-mono text-[10px] tracking-[0.16em] text-muted-foreground">
+            <span className="mb-1.5 block font-mono text-[9px] font-bold tracking-[0.2em] text-[#5A5A4A] uppercase">
               BUILDER TITLE
             </span>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <div
-                className={cn(
-                  inputClass,
-                  'flex-1 cursor-default select-none py-4 text-base font-semibold',
-                )}
-              >
+              <div className="flex-1 border-2 border-[#111111] bg-[#FFE600] px-4 py-2.5 text-sm font-bold text-[#111111] shadow-[2px_2px_0px_#111111]">
                 {state.role}
               </div>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => update({ role: rollBuilderTitle(state.role) })}
-                className="h-[50px] shrink-0 rounded-xl px-5 text-sm"
+                className="shrink-0 text-xs"
               >
-                🎲 Generate Builder Title
+                🎲 Generate Title
               </Button>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Generate a unique Hacker House Goa builder identity.
+            <p className="mt-1.5 font-mono text-[9px] tracking-[0.1em] text-[#5A5A4A] uppercase">
+              Generate a unique builder identity
             </p>
           </div>
 
+          {/* primary asset selector */}
           <div>
-            <span className="mb-3 block font-mono text-[10px] tracking-[0.16em] text-muted-foreground">
+            <span className="mb-2 block font-mono text-[9px] font-bold tracking-[0.2em] text-[#5A5A4A] uppercase">
               PRIMARY ASSET
             </span>
             <div className="grid grid-cols-2 gap-3">
@@ -127,14 +124,19 @@ export function CustomizeScreen({
                   onClick={() => update({ template: key })}
                   aria-pressed={state.template === key}
                   className={cn(
-                    'rounded-2xl border p-4 text-left transition-all',
+                    'border-2 p-4 text-left transition-all',
                     state.template === key
-                      ? 'border-foreground/30 bg-foreground/5'
-                      : 'border-border hover:border-foreground/20',
+                      ? 'border-[#0B6E3D] bg-[#0B6E3D]/8 shadow-[3px_3px_0px_#0B6E3D]'
+                      : 'border-[#111111] bg-white shadow-[2px_2px_0px_#111111] hover:shadow-[1px_1px_0px_#111111] hover:translate-x-[1px] hover:translate-y-[1px]',
                   )}
                 >
-                  <span className="block text-sm font-medium">{title}</span>
-                  <span className="mt-1 block text-xs text-muted-foreground">
+                  {state.template === key && (
+                    <span className="mb-2 inline-block border border-[#0B6E3D] bg-[#0B6E3D] px-1.5 py-0.5 font-mono text-[8px] tracking-widest text-[#F7F3E8] uppercase">
+                      SELECTED
+                    </span>
+                  )}
+                  <span className="block text-sm font-bold text-[#111111]">{title}</span>
+                  <span className="mt-0.5 block font-mono text-[9px] tracking-[0.1em] text-[#5A5A4A] uppercase">
                     {desc}
                   </span>
                 </button>
@@ -142,21 +144,12 @@ export function CustomizeScreen({
             </div>
           </div>
 
-          <div className="flex items-center gap-3 pt-4">
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={onBack}
-              className="h-12 rounded-full px-6"
-            >
-              Back
+          <div className="flex items-center gap-3 border-t-2 border-[#111111]/15 pt-6">
+            <Button variant="outline" size="lg" onClick={onBack} className="px-6">
+              ← Back
             </Button>
-            <Button
-              size="lg"
-              onClick={onNext}
-              className="h-12 rounded-full px-8 text-[15px]"
-            >
-              Preview
+            <Button size="lg" onClick={onNext} className="px-8">
+              Preview →
             </Button>
           </div>
         </div>
@@ -164,21 +157,30 @@ export function CustomizeScreen({
         {/* live preview */}
         <div className="animate-rise [animation-delay:120ms]">
           <div className="lg:sticky lg:top-28">
+            <div className="mb-2 flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-[#FF0A7A]" style={{ animation: 'hh-pulse-dot 1.5s ease-in-out infinite' }} />
+              <span className="font-mono text-[9px] tracking-[0.16em] text-[#5A5A4A] uppercase">Live Preview</span>
+            </div>
             <div
               className={cn(
-                'mx-auto w-full rounded-[2rem] border border-border/60 glass p-4 shadow-2xl shadow-black/40',
-                state.template === 'frame' ? 'max-w-[19rem]' : 'max-w-[26rem] sm:p-5',
+                'border-2 border-[#111111] bg-white p-4 shadow-[4px_4px_0px_#111111] flex justify-center overflow-hidden',
+                state.template === 'frame' ? 'w-[332px]' : 'w-[356px]',
               )}
             >
               {state.template === 'frame' ? (
-                <ProfileFrame state={state} />
+                <div className="w-[300px] h-[300px] overflow-hidden relative">
+                  <div style={{ transform: 'scale(0.5)', transformOrigin: 'top left', width: 600, height: 600 }}>
+                    <ProfileFrame state={state} />
+                  </div>
+                </div>
               ) : (
-                <BuilderCard state={state} />
+                <div className="w-[324px] h-[576px] overflow-hidden relative">
+                  <div style={{ transform: 'scale(0.3)', transformOrigin: 'top left', width: 1080, height: 1920 }}>
+                    <BuilderCard state={state} />
+                  </div>
+                </div>
               )}
             </div>
-            <p className="mt-4 text-center text-xs text-muted-foreground">
-              Live preview · updates as you type
-            </p>
           </div>
         </div>
       </div>

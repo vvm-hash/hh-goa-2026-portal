@@ -1,216 +1,178 @@
-// components/creator/builder-card.tsx
-import { cn } from '@/lib/utils'
-import { BrandMark } from './brand-mark'
+import React from 'react'
 import { PhotoLayer } from './photo-layer'
-import { ACCENTS, BUILDER_ID, type CreatorState } from './types'
+import { type CreatorState, BUILDER_ID } from './types'
 
-export function BuilderCard({
-  state,
-  className,
-}: {
+interface BuilderCardProps {
   state: CreatorState
-  className?: string
-}) {
-  // Accent kept for compatibility with existing state/types, but the
-  // credential itself always renders in the official HH Goa system palette.
-  void ACCENTS[state.accent]
+}
 
-  const location = state.location.trim() || 'Goa, India'
-  const teamName = state.teamName.trim() || 'Solo Builder'
+export function BuilderCard({ state }: BuilderCardProps) {
+  const location = state.location?.trim() || 'GOA, INDIA'
+  const teamName = state.teamName?.trim() || 'SOLO BUILDER'
+  const role = state.role?.trim() || 'CHAOS ENGINEER'
+  const builderId = BUILDER_ID.split('').reverse().join('').slice(0, 8).toUpperCase()
 
   return (
-    <div
-      className={cn(
-        'group relative flex aspect-[3/5.3] w-full flex-col overflow-hidden rounded-[1.9rem] border border-[#232D35] bg-[#11161B] text-[#F0F6FC] transition-transform duration-300 ease-out hover:-translate-y-1',
-        className,
-      )}
-    >
-      <style>{`
-        @keyframes hh-bc-pulse {
-          0%, 100% { opacity: 0.6; }
-          50% { opacity: 1; }
-        }
-        @keyframes hh-bc-shimmer {
-          0% { transform: translateX(-140%) rotate(18deg); }
-          100% { transform: translateX(140%) rotate(18deg); }
-        }
-        @keyframes hh-bc-scan {
-          0% { background-position: 0 -100%; }
-          100% { background-position: 0 200%; }
-        }
-      `}</style>
+    <div className="w-[1080px] h-[1920px] bg-[#F6F1E8] border-[16px] border-black flex flex-col font-sans box-border">
+      
+      {/* PANEL 1: HEADER (200px) */}
+      <div className="h-[200px] w-full flex border-b-[16px] border-black shrink-0">
+        <div className="flex-1 bg-[#FFE600] p-10 px-12 flex flex-col justify-center">
+          <div className="font-mono text-3xl font-black tracking-[0.2em] uppercase text-black mb-3">
+            BUILD IN GOA
+          </div>
+          <div className="font-mono text-5xl font-black tracking-widest uppercase text-black">
+            BUILDER CREDENTIAL
+          </div>
+        </div>
+        <div className="w-[400px] bg-[#111111] border-l-[16px] border-black p-10 flex flex-col justify-center items-end shrink-0">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-5 h-5 bg-[#22C55E] rounded-full border-2 border-white shadow-[0_0_10px_#22C55E]" />
+            <div className="font-mono text-2xl font-bold tracking-widest text-[#22C55E] uppercase">
+              SYS: ONLINE
+            </div>
+          </div>
+          <div className="font-mono text-base tracking-widest text-[#888888] mb-1">
+            LAT 15.2993° N
+          </div>
+          <div className="font-mono text-base tracking-widest text-[#888888]">
+            LON 74.1240° E
+          </div>
+        </div>
+      </div>
 
-      {/* faint structural grid */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.05]"
-        style={{
-          backgroundImage:
-            'linear-gradient(to right, #F0F6FC 1px, transparent 1px), linear-gradient(to bottom, #F0F6FC 1px, transparent 1px)',
-          backgroundSize: '21px 21px',
-        }}
-      />
-
-      {/* scanlines */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.045]"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(to bottom, #F0F6FC 0px, #F0F6FC 1px, transparent 1px, transparent 3px)',
-          backgroundSize: '100% 6px',
-          animation: 'hh-bc-scan 10s linear infinite',
-        }}
-      />
-
-      {/* header band — top label moved out of absolute-overlap position and
-          the badge given its own row so nothing collides */}
-      <div className="relative shrink-0 border-b border-[#232D35] bg-[#0B0F0C] px-6 pb-4 pt-5">
-        <div
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-[2.5px] bg-gradient-to-r from-[#2EA043] via-[#3FB950] to-[#58A6FF]"
+      {/* PANEL 2: ABSTRACT SCENERY (400px) */}
+      <div className="h-[400px] w-full bg-[#F6F1E8] border-b-[16px] border-black relative overflow-hidden flex items-center justify-center shrink-0">
+        {/* Background Grid */}
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: 'linear-gradient(to right, rgba(0,0,0,0.05) 2px, transparent 2px), linear-gradient(to bottom, rgba(0,0,0,0.05) 2px, transparent 2px)',
+            backgroundSize: '40px 40px'
+          }}
         />
 
-        <div className="flex items-center justify-between">
-          <BrandMark showWordmark={false} />
-          <span className="font-mono text-[8px] tracking-[0.22em] text-[#6E7681]">
-            HACKER HOUSE GOA
-          </span>
+        {/* Beach/Sand */}
+        <div className="absolute bottom-0 inset-x-0 h-[100px] bg-[#FFE600] border-t-[16px] border-black z-10" />
+        
+        {/* The Sun */}
+        <div className="absolute bottom-[100px] left-[80px] w-[300px] h-[150px] bg-[#FF0A7A] rounded-t-full border-t-[16px] border-x-[16px] border-black z-10" />
+        
+        {/* Ocean Waves */}
+        <div className="absolute bottom-[100px] left-[350px] w-[800px] h-[100px] flex overflow-hidden z-10">
+           <div className="w-[140px] h-[140px] rounded-full border-[16px] border-black mt-10 -ml-4 bg-[#A2E2C3] shrink-0 border-b-0"></div>
+           <div className="w-[140px] h-[140px] rounded-full border-[16px] border-black mt-10 -ml-8 bg-[#A2E2C3] shrink-0 border-b-0"></div>
+           <div className="w-[140px] h-[140px] rounded-full border-[16px] border-black mt-10 -ml-8 bg-[#A2E2C3] shrink-0 border-b-0"></div>
+           <div className="w-[140px] h-[140px] rounded-full border-[16px] border-black mt-10 -ml-8 bg-[#A2E2C3] shrink-0 border-b-0"></div>
+           <div className="w-[140px] h-[140px] rounded-full border-[16px] border-black mt-10 -ml-8 bg-[#A2E2C3] shrink-0 border-b-0"></div>
+           <div className="w-[140px] h-[140px] rounded-full border-[16px] border-black mt-10 -ml-8 bg-[#A2E2C3] shrink-0 border-b-0"></div>
         </div>
 
-        <div className="mt-3.5 flex items-center justify-between gap-3">
-          <p className="font-mono text-[9.5px] tracking-[0.2em] text-[#6E7681]">
-            OFFICIAL RESIDENCY CREDENTIAL
-          </p>
-          <span className="shrink-0 rounded-full border border-[#3FB950]/30 bg-[#2EA043]/10 px-3 py-1.5 font-mono text-[10.5px] tracking-[0.2em] text-[#3FB950]">
-            BUILDER PASS
-          </span>
+        {/* Abstract Coconut Leaves */}
+        <div className="absolute top-[-40px] right-[-40px] w-[260px] h-[260px] border-b-[36px] border-l-[36px] border-[#0B5C3B] rounded-bl-full z-10" />
+        <div className="absolute top-[40px] right-[80px] w-[220px] h-[220px] border-b-[28px] border-l-[28px] border-[#0B5C3B] rounded-bl-full z-10" />
+        <div className="absolute top-[140px] right-[0px] w-[200px] h-[200px] border-b-[24px] border-l-[24px] border-[#0B5C3B] rounded-bl-full z-10" />
+        
+        {/* Typography */}
+        <div className="z-20 text-[85px] font-black uppercase tracking-tighter text-black bg-white px-12 py-4 border-[16px] border-black shadow-[20px_20px_0px_#111111] -mt-12 whitespace-nowrap">
+          HACKERHOUSE GOA
         </div>
       </div>
 
-      {/* photo + identity — portrait remains the hero element */}
-      <div className="flex shrink-0 items-center gap-5 px-6 pt-8">
-        <div className="relative aspect-square w-[7.6rem] shrink-0">
-          <div
-            aria-hidden
-            className="absolute -inset-2 rounded-2xl blur-md"
-            style={{
-              background:
-                'radial-gradient(closest-side, rgba(46,160,67,0.4), transparent 70%)',
-              animation: 'hh-bc-pulse 4.5s ease-in-out infinite',
-            }}
-          />
-          <div
-            aria-hidden
-            className="absolute -inset-1 rounded-2xl"
-            style={{
-              padding: '2.5px',
-              background: 'linear-gradient(135deg, #2EA043, #58A6FF)',
-              WebkitMask:
-                'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
-              WebkitMaskComposite: 'xor',
-              maskComposite: 'exclude',
-              opacity: 0.8,
-            }}
-          />
-          <div className="relative h-full w-full overflow-hidden rounded-2xl border border-[#232D35] bg-[#0B0F0C]">
-            <PhotoLayer state={state} />
-            <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
-              <div
-                className="absolute inset-y-0 left-0 w-1/3"
-                style={{
-                  background:
-                    'linear-gradient(105deg, transparent, rgba(240,246,252,0.2), transparent)',
-                  animation: 'hh-bc-shimmer 6s ease-in-out infinite',
-                }}
-              />
+      {/* PANEL 3: THE IDENTITY (700px) */}
+      <div className="h-[700px] w-full flex border-b-[16px] border-black shrink-0 bg-[#0B5C3B]">
+        {/* Left: Photo */}
+        <div className="w-[460px] border-r-[16px] border-black p-10 flex items-center justify-center relative shrink-0">
+          <div className="w-[360px] h-[450px] bg-[#F6F1E8] border-[16px] border-black shadow-[24px_24px_0px_#111111] p-5 rotate-[-3deg] relative z-20">
+            <div className="w-full h-full relative overflow-hidden border-[8px] border-black bg-white">
+              <PhotoLayer state={state} />
             </div>
-            <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10" />
+          </div>
+          
+          {/* Logo Sticker */}
+          <div className="absolute bottom-8 right-6 w-[120px] h-[120px] bg-white border-[8px] border-black shadow-[8px_8px_0px_#FF0A7A] rounded-full overflow-hidden rotate-[15deg] z-30">
+            <img src="/hhgoalogo.jpg" alt="HH Goa" className="w-full h-full object-cover" />
           </div>
         </div>
-        <div className="min-w-0 flex-1 self-center pl-1">
-          <p className="truncate text-[20px] font-semibold tracking-tight">{state.name}</p>
-          <p className="mt-1 truncate text-[13.5px] text-[#8B949E]">{state.role}</p>
-          <span className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#2EA043]/15 px-2.5 py-1.5 font-mono text-[9.5px] tracking-[0.14em] text-[#3FB950]">
-            <span className="size-[7px] rounded-full bg-[#3FB950]" style={{ animation: 'hh-bc-pulse 2.4s ease-in-out infinite' }} />
-            LIVE
-          </span>
-        </div>
-      </div>
 
-      {/* builder credential grid — meaningful HH Goa fields, driven by state */}
-      <div className="relative mt-7 shrink-0 px-6">
-        <span className="absolute -top-1 right-6 font-mono text-[8px] tracking-[0.22em] text-[#6E7681]">
-          CREDENTIAL
-        </span>
-        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-[#232D35] bg-[#232D35]">
-          {[
-            ['BUILDER ID', BUILDER_ID],
-            ['TEAM NAME', teamName.toUpperCase()],
-            ['LOCATION', location.toUpperCase()],
-            ['STATUS', 'ACTIVE'],
-          ].map(([label, value]) => (
-            <div key={label} className="bg-[#0B0F0C] px-4 py-2.5">
-              <dt className="font-mono text-[8.5px] tracking-[0.14em] text-[#6E7681]">{label}</dt>
-              <dd className="mt-1 truncate font-mono text-[13px] text-[#F0F6FC]">{value}</dd>
+        {/* Right: Data */}
+        <div className="flex-1 flex flex-col shrink-0 min-w-0">
+          <div className="flex-1 p-10 bg-[#F6F1E8] flex flex-col justify-center shrink-0 min-w-0">
+            <div className="font-mono text-3xl font-bold tracking-widest text-[#FF0A7A] uppercase mb-6">
+              HH GOA BUILDER
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* footer meta pinned to bottom */}
-      <div className="mt-auto space-y-5 px-6 pb-8 pt-6">
-        <dl className="flex items-center justify-between border-t border-[#232D35] pt-4 font-mono text-[10.5px] tracking-[0.1em] text-[#6E7681]">
-          <div>
-            <dt className="text-[9.5px] tracking-[0.16em]">EVENT</dt>
-            <dd className="mt-1 text-[#8B949E]">HACKER HOUSE GOA</dd>
+            <div className="text-[100px] font-black uppercase text-black leading-[0.9] break-words max-h-[220px] overflow-hidden">
+              {state.name || "BUILDER"}
+            </div>
           </div>
-          <div className="text-right">
-            <dt className="text-[9.5px] tracking-[0.16em]">RESIDENCY</dt>
-            <dd className="mt-1 text-[#8B949E]">28–31 OCT</dd>
-          </div>
-        </dl>
-
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <p className="font-mono text-[9.5px] tracking-[0.16em] text-[#6E7681]">SESSION HASH</p>
-            <p className="truncate font-mono text-[12px] text-[#6E7681]">
-              {BUILDER_ID.split('').reverse().join('').slice(0, 12).toUpperCase() || 'A1F9-3C7D-90BE'}
-            </p>
-            <p className="mt-2 font-mono text-[8.5px] tracking-[0.2em] text-[#6E7681]/70">
-              {location.toUpperCase()} · 2026
-            </p>
-          </div>
-
-          {/* premium security seal */}
-          <div className="relative shrink-0" aria-hidden>
-            <div
-              className="absolute -inset-2 rounded-full blur-md"
-              style={{
-                background: 'radial-gradient(closest-side, rgba(63,185,80,0.5), transparent 70%)',
-                animation: 'hh-bc-pulse 3.6s ease-in-out infinite',
-              }}
-            />
-            <div
-              className="relative grid size-[3.3rem] place-items-center rounded-full border border-[#3FB950]/40 bg-[#0B0F0C]"
-              style={{
-                backgroundImage:
-                  'conic-gradient(from 0deg, rgba(46,160,67,0.35), rgba(88,166,255,0.25), rgba(46,160,67,0.35))',
-              }}
-            >
-              <div className="grid size-9 place-items-center rounded-full border border-[#232D35] bg-[#11161B]">
-                <span className="font-mono text-[10.5px] font-semibold tracking-tight text-[#3FB950]">
-                  HH
-                </span>
-              </div>
+          {/* Stacked Vertical Blocks for max width */}
+          <div className="flex flex-col shrink-0 border-t-[16px] border-black">
+            <div className="h-[140px] bg-[#FF0A7A] border-b-[16px] border-black px-10 flex flex-col justify-center min-w-0">
+               <div className="font-mono text-xl font-bold tracking-widest text-black uppercase mb-1">
+                 BUILDER CLASS
+               </div>
+               <div className="text-4xl font-black uppercase text-white break-words leading-tight max-h-full overflow-hidden">
+                 {role}
+               </div>
+            </div>
+            <div className="h-[140px] bg-[#FFE600] px-10 flex flex-col justify-center min-w-0">
+               <div className="font-mono text-xl font-bold tracking-widest text-black uppercase mb-1">
+                 TEAM
+               </div>
+               <div className="text-4xl font-black uppercase text-black break-words leading-tight max-h-full overflow-hidden">
+                 {teamName}
+               </div>
             </div>
           </div>
         </div>
-
-        <p className="text-center font-mono text-[9.5px] tracking-[0.24em] text-[#6E7681]">
-          HACKER HOUSE GOA • BUILD • CONNECT • SHIP
-        </p>
       </div>
+
+      {/* PANEL 4: THE TECH GRID (400px) */}
+      <div className="h-[400px] flex w-full border-b-[16px] border-black shrink-0">
+        <div className="w-[460px] border-r-[16px] border-black flex flex-col shrink-0">
+          <div className="h-[200px] border-b-[16px] border-black p-12 flex flex-col justify-center bg-white shrink-0">
+             <div className="font-mono text-2xl font-bold tracking-widest text-[#888888] uppercase mb-4">
+               BASE
+             </div>
+             <div className="text-4xl font-black uppercase text-black break-words leading-tight max-h-full overflow-hidden">
+               {location}
+             </div>
+          </div>
+          <div className="h-[184px] p-12 flex flex-col justify-center bg-[#F6F1E8] shrink-0">
+             <div className="font-mono text-2xl font-bold tracking-widest text-[#888888] uppercase mb-4">
+               NETWORK
+             </div>
+             <div className="text-4xl font-black uppercase text-[#22C55E]">
+               BUILDER ONLINE
+             </div>
+          </div>
+        </div>
+        
+        <div className="flex-1 bg-[#111111] p-10 flex flex-col justify-center items-center text-center min-w-0">
+           <div className="font-mono text-4xl font-bold tracking-[0.3em] text-[#FFE600] uppercase mb-10">
+             CREDENTIAL ID
+           </div>
+           <div className="text-7xl font-black font-mono text-white tracking-widest">
+             {builderId}
+           </div>
+           <div className="mt-14 flex gap-2">
+             {[4,2,6,1,3,5,2,4,7,2,1,5,3,4,6,2,3,1,5].map((w, i) => (
+               <div key={i} className="bg-[#5A5A4A] h-20" style={{ width: `${w * 4}px` }} />
+             ))}
+           </div>
+        </div>
+      </div>
+
+      {/* PANEL 5: FOOTER (188px) */}
+      <div className="h-[188px] w-full bg-[#FF0A7A] px-14 py-0 flex justify-between items-center shrink-0">
+         <div className="text-7xl font-black text-black tracking-widest uppercase">
+           #FRAMEINGOA
+         </div>
+         <div className="font-mono text-4xl font-bold text-black uppercase">
+           SESSION / OCT 26
+         </div>
+      </div>
+      
     </div>
   )
 }

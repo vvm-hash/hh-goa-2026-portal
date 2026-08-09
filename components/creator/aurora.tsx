@@ -2,55 +2,35 @@
 export function Aurora() {
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      {/* base graphite wash */}
-      <div className="absolute inset-0 bg-[#0D1117]" />
+      {/* cream base */}
+      <div className="absolute inset-0 bg-[#F7F3E8]" />
 
-      {/* faint emerald glow, upper area */}
+      {/* technical grid — ruled paper feel */}
       <div
-        className="absolute -top-[28vh] left-1/2 h-[62vh] w-[80vw] -translate-x-1/2 rounded-full opacity-[0.16] blur-[130px]"
-        style={{
-          background: 'radial-gradient(closest-side, #2EA043, transparent)',
-          animation: 'hh-float 16s ease-in-out infinite',
-        }}
-      />
-
-      {/* faint blue accent glow, lower left */}
-      <div
-        className="absolute bottom-[-22vh] left-[-12vw] h-[48vh] w-[48vw] rounded-full opacity-[0.10] blur-[130px]"
-        style={{
-          background: 'radial-gradient(closest-side, #58A6FF, transparent)',
-          animation: 'hh-float 20s ease-in-out infinite reverse',
-        }}
-      />
-
-      {/* soft secondary emerald wash, lower right */}
-      <div
-        className="absolute bottom-[-18vh] right-[-10vw] h-[40vh] w-[40vw] rounded-full opacity-[0.08] blur-[130px]"
-        style={{
-          background: 'radial-gradient(closest-side, #3FB950, transparent)',
-          animation: 'hh-float 22s ease-in-out infinite',
-        }}
-      />
-
-      {/* subtle grid */}
-      <div
-        className="absolute inset-0 opacity-[0.035]"
+        className="absolute inset-0"
         style={{
           backgroundImage:
-            'linear-gradient(to right, #8B949E 1px, transparent 1px), linear-gradient(to bottom, #8B949E 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
-          maskImage:
-            'radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent 75%)',
+            'linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.05) 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
         }}
       />
 
-      {/* faint noise-like grain */}
+      {/* large dot grid accent, upper area */}
       <div
-        className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+        className="absolute inset-0 opacity-30"
         style={{
-          backgroundImage:
-            'radial-gradient(rgba(240,246,252,0.6) 0.5px, transparent 0.5px)',
-          backgroundSize: '3px 3px',
+          backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.12) 1px, transparent 1px)',
+          backgroundSize: '20px 20px',
+          maskImage: 'radial-gradient(ellipse 70% 40% at 80% 10%, black, transparent 70%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 70% 40% at 80% 10%, black, transparent 70%)',
+        }}
+      />
+
+      {/* subtle warm wash, bottom */}
+      <div
+        className="absolute inset-x-0 bottom-0 h-[40vh] opacity-40"
+        style={{
+          background: 'linear-gradient(to top, #E8E3D4, transparent)',
         }}
       />
     </div>

@@ -1,230 +1,145 @@
-// components/creator/profile-frame.tsx
-import { cn } from '@/lib/utils'
+import React from 'react'
 import { PhotoLayer } from './photo-layer'
 import { type CreatorState } from './types'
 
-const RING_PRIMARY = '#2EA043'
-const RING_HIGHLIGHT = '#58A6FF'
-
-export function ProfileFrame({
-  state,
-  className,
-}: {
+interface ProfileFrameProps {
   state: CreatorState
-  className?: string
-}) {
+}
+
+export function ProfileFrame({ state }: ProfileFrameProps) {
   const location = state.location.trim() || 'Goa, India'
 
   return (
-    <div
-      className={cn(
-        'group relative aspect-square w-full overflow-visible rounded-[1.5rem]',
-        className,
-      )}
-    >
-      <style>{`
-        @keyframes hh-pf-pulse {
-          0%, 100% { opacity: 0.55; }
-          50% { opacity: 0.95; }
-        }
-        @keyframes hh-pf-shimmer {
-          0% { transform: translateX(-120%) rotate(20deg); }
-          100% { transform: translateX(120%) rotate(20deg); }
-        }
-        @keyframes hh-pf-scan {
-          0% { background-position: 0 -100%; }
-          100% { background-position: 0 200%; }
-        }
-        @keyframes hh-pf-spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
-
-      {/* outer premium panel — same footprint as before (unchanged -inset-[6%]
-          technique), now with overflow-hidden so nothing can ever render or
-          export past the card's own bounds */}
-      <div className="absolute -inset-[6%] overflow-hidden rounded-[1.75rem] border border-[#232D35] bg-[#11161B]">
-        {/* base wash */}
-        <div
-          aria-hidden
-          className="absolute inset-0 rounded-[1.75rem]"
-          style={{
-            background:
-              'radial-gradient(120% 90% at 50% 10%, rgba(46,160,67,0.10), transparent 60%), radial-gradient(90% 70% at 85% 95%, rgba(88,166,255,0.08), transparent 60%)',
-          }}
+    <div className="relative w-[600px] h-[600px] bg-[#F6F1E8] font-sans flex items-center justify-center overflow-hidden border-[8px] border-[#111111]">
+      
+      {/* Outer Container */}
+      <div className="absolute inset-0 bg-[#F7F3E8] border-[6px] border-[#111111] overflow-hidden shadow-2xl">
+        
+        {/* Layer 1: Background Topography & Grid */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
+             style={{
+               backgroundImage: 'repeating-radial-gradient(circle at 100% 0%, transparent, transparent 40px, #111111 40px, #111111 42px)'
+             }}
         />
+        
+        {/* Technical Grid Lines */}
+        <div className="absolute top-[80px] bottom-0 left-[80px] w-px bg-[#111111]/15 z-0" />
+        <div className="absolute top-[80px] bottom-0 right-[80px] w-px bg-[#111111]/15 z-0" />
+        <div className="absolute left-[80px] right-[80px] top-[80px] h-px bg-[#111111]/15 z-0" />
+        <div className="absolute left-[80px] right-0 bottom-[160px] h-px bg-[#111111]/15 z-0" />
 
-        {/* scanlines */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.75rem] opacity-[0.05]"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(to bottom, #F0F6FC 0px, #F0F6FC 1px, transparent 1px, transparent 3px)',
-            backgroundSize: '100% 6px',
-            animation: 'hh-pf-scan 9s linear infinite',
-          }}
-        />
-
-        {/* gradient border */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-[1.75rem]"
-          style={{
-            padding: '1px',
-            background:
-              'linear-gradient(135deg, rgba(46,160,67,0.5), rgba(88,166,255,0.25) 55%, transparent 85%)',
-            WebkitMask:
-              'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
-            WebkitMaskComposite: 'xor',
-            maskComposite: 'exclude',
-          }}
-        />
-
-        {/* content column — equal padding on all four edges, and a vertical
-            rhythm sized so the photo never outgrows the space left by the
-            header/identity/footer chrome (root cause of the old clipping) */}
-        <div className="relative flex h-full flex-col p-4">
-          {/* top labels — shrink-0, stronger branding */}
-          <div className="flex shrink-0 items-center justify-between">
-            <span className="font-mono text-[9.5px] font-semibold tracking-[0.2em] text-[#F0F6FC]/90">
-              HACKER HOUSE GOA
-            </span>
-            <span className="font-mono text-[9.5px] tracking-[0.26em] text-[#8B949E]">
-              2026
-            </span>
-          </div>
-
-          {/* photo zone — flex-1, sized in px terms it can never exceed */}
-          <div className="relative mt-2 flex min-h-0 flex-1 items-center justify-center">
-            <div className="relative aspect-square w-[70%]">
-              {/* soft glow */}
-              <div
-                aria-hidden
-                className="absolute -inset-3 rounded-full blur-xl"
-                style={{
-                  background:
-                    'radial-gradient(closest-side, rgba(46,160,67,0.45), rgba(88,166,255,0.18) 65%, transparent)',
-                  animation: 'hh-pf-pulse 4.5s ease-in-out infinite',
-                }}
-              />
-
-              {/* rotating curved-text identity ring — strong, repeated branding */}
-              <svg
-                aria-hidden
-                viewBox="0 0 200 200"
-                className="absolute -inset-[10%]"
-                style={{ animation: 'hh-pf-spin 34s linear infinite' }}
-              >
-                <defs>
-                  <path
-                    id="hh-pf-ring-path"
-                    d="M 100,100 m -84,0 a 84,84 0 1,1 168,0 a 84,84 0 1,1 -168,0"
-                  />
-                </defs>
-                <text
-                  fill="#8B949E"
-                  fontSize="9.5"
-                  fontFamily="var(--font-mono, ui-monospace, monospace)"
-                  letterSpacing="3.4"
-                >
-                  <textPath href="#hh-pf-ring-path" startOffset="0%">
-                    HACKER HOUSE GOA • HACKER HOUSE GOA •
-                  </textPath>
-                </text>
-              </svg>
-
-              {/* small separator dots around the circle */}
-              {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
-                <span
-                  key={deg}
-                  aria-hidden
-                  className="absolute left-1/2 top-1/2 size-[3px] rounded-full bg-[#3FB950]/70"
-                  style={{
-                    transform: `rotate(${deg}deg) translate(0, -108%) rotate(-${deg}deg)`,
-                    transformOrigin: 'center',
-                  }}
-                />
-              ))}
-
-              {/* holographic gradient ring — fixed HH Goa palette */}
-              <div
-                aria-hidden
-                className="absolute inset-1 rounded-full"
-                style={{
-                  padding: '2.5px',
-                  background: `conic-gradient(from 180deg,
-                  ${RING_PRIMARY},
-                  ${RING_PRIMARY},
-                  ${RING_HIGHLIGHT},
-                  ${RING_PRIMARY})`,
-                  WebkitMask:
-                    'linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)',
-                  WebkitMaskComposite: 'xor',
-                  maskComposite: 'exclude',
-                  opacity: 0.85,
-                }}
-              />
-
-              {/* photo — the full frame, always visible, never clipped */}
-              <div className="absolute inset-[6px] overflow-hidden rounded-full border border-[#232D35] bg-[#0B0F0C]">
-                <PhotoLayer state={state} />
-
-                {/* shimmer sweep */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 overflow-hidden rounded-full"
-                >
-                  <div
-                    className="absolute inset-y-0 left-0 w-1/3"
-                    style={{
-                      background:
-                        'linear-gradient(105deg, transparent, rgba(240,246,252,0.22), transparent)',
-                      animation: 'hh-pf-shimmer 5.5s ease-in-out infinite',
-                    }}
-                  />
-                </div>
-
-                {/* inner ring for glass depth */}
-                <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-white/10" />
-              </div>
-            </div>
-          </div>
-
-          {/* identity — shrink-0, unchanged two-line footprint */}
-          <div className="mt-2 shrink-0 text-center">
-            <p className="truncate text-[17px] font-semibold tracking-tight text-[#F0F6FC]">
-              {state.name}
-            </p>
-            <p className="mt-0.5 truncate text-xs text-[#8B949E]">{state.role}</p>
-          </div>
-
-          {/* footer — shrink-0, always inside the canvas; carries dynamic
-              location instead of a hardcoded one */}
-          <div className="relative mt-2 flex shrink-0 items-center justify-center">
-            <span className="max-w-[66%] truncate font-mono text-[7.5px] tracking-[0.14em] text-[#3FB950]/85">
-              VERIFIED BUILDER · {location.toUpperCase()}
-            </span>
-            <span className="absolute right-0 rounded-full border border-[#232D35] bg-[#0B0F0C]/70 px-2 py-1 font-mono text-[8px] tracking-[0.18em] text-[#3FB950] backdrop-blur-sm">
-              HH GOA
-            </span>
-          </div>
+        {/* Layer 2: Midground Geometry (Sun & Sea) */}
+        {/* Massive Offset Golden Sun */}
+        <div className="absolute top-[-100px] right-[-100px] w-[460px] h-[460px] rounded-full bg-[#FFE600] border-[6px] border-[#111111] z-10 flex items-center justify-center overflow-hidden">
+           {/* Magenta Sea Cut */}
+           <div className="w-full h-[40%] bg-[#FF0A7A] mt-auto border-t-[6px] border-[#111111]" />
         </div>
 
-        {/* corner brackets */}
-        {[
-          'left-3 top-3 border-l border-t',
-          'right-3 top-3 border-r border-t',
-          'left-3 bottom-3 border-l border-b',
-          'right-3 bottom-3 border-r border-b',
-        ].map((pos) => (
-          <span
-            key={pos}
-            aria-hidden
-            className={cn('absolute size-3.5 border-[#3FB950]/50', pos)}
-          />
-        ))}
+        {/* Huge Bleeding Background Typography */}
+        <div className="absolute bottom-[180px] left-[-10px] text-[180px] font-black leading-[0.8] tracking-tighter text-[#111111] opacity-[0.03] select-none z-0">
+          BUILD
+        </div>
+        
+        {/* Layer 3: Foreground Structure */}
+        <div className="relative w-full h-full flex flex-col z-20">
+          
+          {/* Header Strip */}
+          <div className="flex justify-between items-center p-5 pl-8 pr-8 border-b-[6px] border-[#111111] bg-white/90">
+             <div className="flex gap-4 items-center">
+               <div className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#111111] uppercase bg-[#FFE600] px-2 py-0.5 border-[2px] border-[#111111]">
+                 Session 01
+               </div>
+               <div className="font-mono text-[9px] tracking-widest text-[#5A5A4A] uppercase">
+                 Arabian Sea • Golden Hour
+               </div>
+             </div>
+             <div className="font-mono text-[9px] font-bold tracking-widest text-[#111111] uppercase">
+               UTC +05:30
+             </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="flex-1 relative p-8">
+             
+             {/* Registration Marks */}
+             <div className="absolute top-8 left-8 w-4 h-4 border-t-[3px] border-l-[3px] border-[#111111]" />
+             <div className="absolute top-8 right-8 w-4 h-4 border-t-[3px] border-r-[3px] border-[#111111]" />
+             <div className="absolute bottom-8 left-8 w-4 h-4 border-b-[3px] border-l-[3px] border-[#111111]" />
+             
+             {/* The Portrait Container (Massive, overlapping) */}
+             <div className="absolute top-[60px] left-[40px] z-30">
+                {/* Elevation Contours */}
+                <div className="absolute inset-[-24px] rounded-full border-[2px] border-[#111111]/20" />
+                <div className="absolute inset-[-48px] rounded-full border-[2px] border-[#111111]/10" />
+                
+                <div className="relative w-[300px] h-[300px] rounded-full bg-white border-[6px] border-[#111111] shadow-[12px_12px_0px_#0B6E3D] overflow-hidden flex items-center justify-center">
+                   <PhotoLayer state={state} />
+                </div>
+                
+                {/* BUILD IN GOA Sticker */}
+                <div className="absolute top-[-24px] left-[30px] bg-white px-4 py-1 border-[3px] border-[#111111] shadow-[4px_4px_0px_#FF0A7A] z-40 rotate-[-4deg]">
+                  <span className="font-black text-xl uppercase tracking-tighter text-[#111111]">
+                    BUILD IN GOA
+                  </span>
+                </div>
+
+                {/* Maker Network Stamp */}
+                <div className="absolute bottom-4 right-[-10px] bg-[#FF0A7A] border-[3px] border-[#111111] w-[88px] h-[88px] rounded-full flex flex-col items-center justify-center rotate-12 shadow-[4px_4px_0px_#111111]">
+                   <span className="font-mono text-[9px] tracking-[0.1em] text-white uppercase font-bold text-center leading-tight">Maker<br/>Network</span>
+                </div>
+             </div>
+
+             {/* Personal Data Block */}
+             <div className="absolute top-[110px] right-[40px] w-[210px] z-30">
+                <div className="bg-white border-[5px] border-[#111111] p-5 shadow-[6px_6px_0px_#111111] rotate-[-2deg]">
+                  <h1 className="text-[36px] leading-[0.9] font-black uppercase tracking-tight text-[#111111] break-words mb-4">
+                    {state.name || "Hacker"}
+                  </h1>
+                  <div className="space-y-4 mt-5 border-t-[3px] border-[#111111] pt-4">
+                    <div>
+                      <div className="font-mono text-[9px] font-bold tracking-[0.2em] text-[#5A5A4A] uppercase mb-1">Signal</div>
+                      <div className="font-bold text-[13px] uppercase text-[#111111] leading-tight">
+                        {state.role || "Creator"}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="font-mono text-[9px] font-bold tracking-[0.2em] text-[#5A5A4A] uppercase mb-1">Node</div>
+                      <div className="font-bold text-[13px] uppercase text-[#111111] leading-tight">
+                        {location}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+             </div>
+
+          </div>
+
+          {/* Footer Area */}
+          <div className="border-t-[6px] border-[#111111] bg-[#0B6E3D] text-[#F7F3E8] p-6 pb-7 relative overflow-hidden flex items-end justify-between shrink-0">
+             <div className="flex items-center gap-5">
+                {/* Logo Sticker */}
+                <div className="w-[60px] h-[60px] bg-white border-[3px] border-[#111111] shadow-[4px_4px_0px_#111111] shrink-0 overflow-hidden rotate-[-3deg]">
+                  <img src="/hhgoalogo.jpg" alt="HH Goa" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex flex-col justify-end">
+                  <div className="font-mono text-[10px] font-bold tracking-[0.3em] uppercase text-[#FFE600] mb-1">
+                    Official Campaign Frame
+                  </div>
+                  <div className="text-[42px] font-black leading-[0.8] uppercase tracking-tighter drop-shadow-[4px_4px_0px_#111111]">
+                    HACKERHOUSE GOA
+                  </div>
+                </div>
+             </div>
+             
+             {/* Hashtag Block */}
+             <div className="bg-[#111111] border-[3px] border-[#111111] px-4 py-2 shadow-[4px_4px_0px_#FF0A7A] rotate-2">
+               <span className="font-mono text-[13px] tracking-widest text-[#F7F3E8] uppercase font-bold">
+                 #FrameInGoa
+               </span>
+             </div>
+          </div>
+          
+        </div>
       </div>
     </div>
   )

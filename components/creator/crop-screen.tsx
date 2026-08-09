@@ -51,30 +51,31 @@ export function CropScreen({
   }
 
   return (
-    <section className="mx-auto max-w-xl px-5 py-14 sm:px-8 sm:py-20">
-      <div className="animate-rise text-center">
-        <p className="font-mono text-xs tracking-[0.2em] text-muted-foreground">
-          STEP 02
-        </p>
-        <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+    <section className="mx-auto max-w-xl px-5 py-12 sm:px-8 sm:py-16">
+      {/* step header */}
+      <div className="animate-rise">
+        <div className="mb-1 flex items-center gap-2">
+          <span className="sticker-tag bg-[#FFE600] text-[#111111]">02 / CROP</span>
+        </div>
+        <h1 className="mt-4 text-3xl font-black tracking-tight text-[#111111] sm:text-4xl">
           Frame your shot
         </h1>
-        <p className="mx-auto mt-3 max-w-md text-pretty leading-relaxed text-muted-foreground">
-          Drag to reposition and zoom to fit. We&apos;ll keep this crop across
-          both assets.
+        <p className="mt-2 text-[14px] leading-relaxed text-[#5A5A4A]">
+          Drag to reposition and zoom to fit. We&apos;ll keep this crop across both assets.
         </p>
       </div>
 
-      <div className="animate-rise [animation-delay:80ms] mt-9">
+      <div className="animate-rise [animation-delay:80ms] mt-8">
+        {/* crop area */}
         <div
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
-          className="relative mx-auto aspect-square w-full max-w-sm cursor-grab touch-none overflow-hidden rounded-[1.75rem] border border-border/60 bg-secondary active:cursor-grabbing"
+          className="relative mx-auto aspect-square w-full max-w-sm cursor-grab touch-none overflow-hidden border-2 border-[#111111] bg-[#E8E3D4] shadow-[4px_4px_0px_#111111] active:cursor-grabbing"
         >
           {state.imageSrc ? (
             <img
-              src={state.imageSrc || '/placeholder.svg'}
+              src={state.imageSrc}
               alt="Adjust your crop"
               draggable={false}
               className="h-full w-full select-none object-cover"
@@ -83,7 +84,7 @@ export function CropScreen({
               }}
             />
           ) : (
-            <div className="grid h-full place-items-center text-sm text-muted-foreground">
+            <div className="grid h-full place-items-center font-mono text-xs tracking-widest text-[#5A5A4A] uppercase">
               No photo selected
             </div>
           )}
@@ -92,49 +93,50 @@ export function CropScreen({
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute inset-0 grid grid-cols-3 grid-rows-3">
               {Array.from({ length: 9 }).map((_, i) => (
-                <div key={i} className="border border-white/10" />
+                <div key={i} className="border border-[#0B6E3D]/20" />
               ))}
             </div>
-            <div className="absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-white/10" />
           </div>
+
+          {/* corner markers */}
+          {['left-2 top-2 border-l-2 border-t-2', 'right-2 top-2 border-r-2 border-t-2', 'left-2 bottom-2 border-l-2 border-b-2', 'right-2 bottom-2 border-r-2 border-b-2'].map((pos) => (
+            <span key={pos} aria-hidden className={`absolute size-4 border-[#0B6E3D] ${pos}`} />
+          ))}
         </div>
 
         {/* zoom control */}
-        <div className="mx-auto mt-6 flex max-w-sm items-center gap-4">
-          <span className="font-mono text-[10px] tracking-widest text-muted-foreground">
-            ZOOM
-          </span>
-          <input
-            type="range"
-            min={1}
-            max={2.5}
-            step={0.01}
-            value={state.zoom}
-            onChange={(e) => update({ zoom: Number(e.target.value) })}
-            aria-label="Zoom"
-            className="h-1 w-full cursor-pointer appearance-none rounded-full bg-border accent-[var(--brand)] [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-foreground"
-          />
-          <button
-            type="button"
-            onClick={() => update({ zoom: 1, offsetX: 0, offsetY: 0 })}
-            className="shrink-0 text-xs text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Reset
-          </button>
+        <div className="mx-auto mt-6 max-w-sm border-2 border-[#111111] bg-white px-5 py-4 shadow-[3px_3px_0px_#111111]">
+          <div className="flex items-center gap-4">
+            <span className="w-10 shrink-0 font-mono text-[9px] font-bold tracking-[0.18em] text-[#5A5A4A] uppercase">
+              ZOOM
+            </span>
+            <input
+              type="range"
+              min={1}
+              max={2.5}
+              step={0.01}
+              value={state.zoom}
+              onChange={(e) => update({ zoom: Number(e.target.value) })}
+              aria-label="Zoom"
+              className="flex-1"
+            />
+            <button
+              type="button"
+              onClick={() => update({ zoom: 1, offsetX: 0, offsetY: 0 })}
+              className="shrink-0 border border-[#111111] bg-[#F7F3E8] px-2 py-0.5 font-mono text-[9px] tracking-widest text-[#5A5A4A] uppercase transition-colors hover:bg-[#E8E3D4] hover:text-[#111111]"
+            >
+              RESET
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="animate-rise [animation-delay:140ms] mt-9 flex items-center justify-center gap-3">
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={onBack}
-          className="h-12 rounded-full px-6"
-        >
-          Back
+      <div className="animate-rise [animation-delay:140ms] mt-8 flex items-center justify-center gap-3">
+        <Button variant="outline" size="lg" onClick={onBack} className="px-6">
+          ← Back
         </Button>
-        <Button size="lg" onClick={onNext} className="h-12 rounded-full px-8 text-[15px]">
-          Continue
+        <Button size="lg" onClick={onNext} className="px-8">
+          Continue →
         </Button>
       </div>
     </section>
