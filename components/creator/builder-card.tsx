@@ -1,4 +1,5 @@
 import React from 'react'
+import { cn } from '@/lib/utils'
 import { PhotoLayer } from './photo-layer'
 import { type CreatorState } from './types'
 
@@ -101,7 +102,12 @@ export function BuilderCard({ state }: BuilderCardProps) {
             <div className="font-mono text-3xl font-bold tracking-widest text-[#FF0A7A] uppercase mb-6">
               HH GOA BUILDER
             </div>
-            <div className="text-[100px] font-black uppercase text-black leading-[0.9] break-words max-h-[220px] overflow-hidden">
+            <div 
+              className={cn(
+                "font-black uppercase text-black leading-[0.9] break-words max-h-[220px] overflow-hidden",
+                (state.name || "BUILDER").length > 12 ? "text-[60px]" : (state.name || "BUILDER").length > 8 ? "text-[80px]" : "text-[100px]"
+              )}
+            >
               {state.name || "BUILDER"}
             </div>
           </div>

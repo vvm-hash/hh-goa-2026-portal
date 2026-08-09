@@ -1,4 +1,5 @@
 import React from 'react'
+import { cn } from '@/lib/utils'
 import { PhotoLayer } from './photo-layer'
 import { type CreatorState } from './types'
 
@@ -92,7 +93,12 @@ export function ProfileFrame({ state }: ProfileFrameProps) {
              {/* Personal Data Block */}
              <div className="absolute top-[110px] right-[40px] w-[210px] z-30">
                 <div className="bg-white border-[5px] border-[#111111] p-5 shadow-[6px_6px_0px_#111111] rotate-[-2deg]">
-                  <h1 className="text-[36px] leading-[0.9] font-black uppercase tracking-tight text-[#111111] break-words mb-4">
+                  <h1 
+                    className={cn(
+                      "leading-[0.9] font-black uppercase tracking-tight text-[#111111] break-words mb-4",
+                      (state.name || "Hacker").length > 12 ? "text-[22px]" : (state.name || "Hacker").length > 8 ? "text-[28px]" : "text-[36px]"
+                    )}
+                  >
                     {state.name || "Hacker"}
                   </h1>
                   <div className="space-y-4 mt-5 border-t-[3px] border-[#111111] pt-4">

@@ -89,9 +89,13 @@ export function CustomizeScreen({
               BUILDER TITLE
             </span>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="flex-1 border-2 border-[#111111] bg-[#FFE600] px-4 py-2.5 text-sm font-bold text-[#111111] shadow-[2px_2px_0px_#111111]">
-                {state.role}
-              </div>
+              <input
+                className={cn(inputClass, 'flex-1 border-[#111111] bg-[#FFE600] font-bold shadow-[2px_2px_0px_#111111] focus:shadow-[2px_2px_0px_#111111]')}
+                value={state.role}
+                maxLength={24}
+                onChange={(e) => update({ role: e.target.value })}
+                placeholder="Chaos Engineer"
+              />
               <Button
                 type="button"
                 variant="outline"

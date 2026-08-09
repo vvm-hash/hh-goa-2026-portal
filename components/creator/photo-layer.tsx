@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import type { CreatorState } from './types'
 
@@ -12,6 +13,8 @@ export function PhotoLayer({
   state: Pick<CreatorState, 'imageSrc' | 'zoom' | 'offsetX' | 'offsetY'>
   className?: string
 }) {
+  const [isPortrait, setIsPortrait] = useState(true)
+
   if (!state.imageSrc) {
     return (
       <div
@@ -40,9 +43,16 @@ export function PhotoLayer({
       src={state.imageSrc || '/placeholder.svg'}
       alt="Your uploaded portrait"
       crossOrigin="anonymous"
-      className={cn('h-full w-full object-cover', className)}
+      className={cn('absolute max-w-none', className)}
+      onLoad={(e) => setIsPortrait(e.currentTarget.naturalHeight > e.currentTarget.naturalWidth)}
       style={{
-        transform: `translate(${state.offsetX}%, ${state.offsetY}%) scale(${state.zoom})`,
+        minWidth: '100%',
+        minHeight: '100%',
+        width: isPortrait ? '100%' : 'auto',
+        height: isPortrait ? 'auto' : '100%',
+        left: `calc(50% + ${state.offsetX}%)`,
+        top: `calc(50% + ${state.offsetY}%)`,
+        transform: `translate(-50%, -50%) scale(${state.zoom})`,
       }}
     />
   )

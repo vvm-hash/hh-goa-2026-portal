@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import type { CreatorState } from './types'
 
@@ -23,6 +23,8 @@ export function CropScreen({
     baseY: number
   }>({ active: false, startX: 0, startY: 0, baseX: 0, baseY: 0 })
 
+  const [isPortrait, setIsPortrait] = useState(true)
+
   function onPointerDown(e: React.PointerEvent) {
     e.currentTarget.setPointerCapture(e.pointerId)
     drag.current = {
@@ -39,7 +41,7 @@ export function CropScreen({
     const rect = e.currentTarget.getBoundingClientRect()
     const dx = ((e.clientX - drag.current.startX) / rect.width) * 100
     const dy = ((e.clientY - drag.current.startY) / rect.height) * 100
-    const clamp = (v: number) => Math.max(-40, Math.min(40, v))
+    const clamp = (v: number) => Math.max(-100, Math.min(100, v))
     update({
       offsetX: clamp(drag.current.baseX + dx),
       offsetY: clamp(drag.current.baseY + dy),
@@ -78,9 +80,16 @@ export function CropScreen({
               src={state.imageSrc}
               alt="Adjust your crop"
               draggable={false}
-              className="h-full w-full select-none object-cover"
+              className="absolute max-w-none select-none"
+              onLoad={(e) => setIsPortrait(e.currentTarget.naturalHeight > e.currentTarget.naturalWidth)}
               style={{
-                transform: `translate(${state.offsetX}%, ${state.offsetY}%) scale(${state.zoom})`,
+                minWidth: '100%',
+                minHeight: '100%',
+                width: isPortrait ? '100%' : 'auto',
+                height: isPortrait ? 'auto' : '100%',
+                left: `calc(50% + ${state.offsetX}%)`,
+                top: `calc(50% + ${state.offsetY}%)`,
+                transform: `translate(-50%, -50%) scale(${state.zoom})`,
               }}
             />
           ) : (
