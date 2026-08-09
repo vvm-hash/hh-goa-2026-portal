@@ -55,19 +55,19 @@ export function PreviewScreen({
 
         {/* builder id */}
         <figure className="mx-auto w-full max-w-[400px] flex flex-col items-center">
-          <div className="w-[378px] h-[672px] overflow-hidden relative border-4 border-[#111111] bg-white shadow-[8px_8px_0px_#0B6E3D]">
-            <div style={{ transform: 'scale(0.35)', transformOrigin: 'top left', width: 1080, height: 1920 }}>
+          <div className="w-[270px] h-[480px] sm:w-[378px] sm:h-[672px] overflow-hidden relative border-4 border-[#111111] bg-white shadow-[8px_8px_0px_#0B6E3D]">
+            <div className="origin-top-left scale-[0.25] sm:scale-[0.35] w-[1080px] h-[1920px]">
               <div ref={builderCardRef} style={{ width: 1080, height: 1920 }}>
                 <BuilderCard state={state} />
               </div>
             </div>
           </div>
-          <figcaption className="mt-3 flex items-center justify-between w-full max-w-[270px]">
+          <figcaption className="mt-3 flex items-center justify-between w-[270px] sm:w-[378px]">
             <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-[#111111] uppercase">
               Builder ID Card
             </span>
             <span className="border border-[#111111]/30 bg-[#F7F3E8] px-2 py-0.5 font-mono text-[8px] tracking-widest text-[#5A5A4A]">
-              900×1800
+              1080×1920
             </span>
           </figcaption>
         </figure>

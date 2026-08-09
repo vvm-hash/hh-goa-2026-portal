@@ -164,18 +164,18 @@ export function CustomizeScreen({
             <div
               className={cn(
                 'border-2 border-[#111111] bg-white p-4 shadow-[4px_4px_0px_#111111] flex justify-center overflow-hidden',
-                state.template === 'frame' ? 'w-[332px]' : 'w-[356px]',
+                state.template === 'frame' ? 'w-[272px] sm:w-[332px]' : 'w-[280px] sm:w-[356px]',
               )}
             >
               {state.template === 'frame' ? (
-                <div className="w-[300px] h-[300px] overflow-hidden relative">
-                  <div style={{ transform: 'scale(0.5)', transformOrigin: 'top left', width: 600, height: 600 }}>
+                <div className="w-[240px] h-[240px] sm:w-[300px] sm:h-[300px] overflow-hidden relative">
+                  <div className="origin-top-left scale-[0.4] sm:scale-[0.5] w-[600px] h-[600px]">
                     <ProfileFrame state={state} />
                   </div>
                 </div>
               ) : (
-                <div className="w-[324px] h-[576px] overflow-hidden relative">
-                  <div style={{ transform: 'scale(0.3)', transformOrigin: 'top left', width: 1080, height: 1920 }}>
+                <div className="w-[248px] h-[441px] sm:w-[324px] sm:h-[576px] overflow-hidden relative">
+                  <div className="origin-top-left scale-[0.23] sm:scale-[0.3] w-[1080px] h-[1920px]">
                     <BuilderCard state={state} />
                   </div>
                 </div>

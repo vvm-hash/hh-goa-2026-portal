@@ -110,8 +110,8 @@ export function Landing({ onStart }: { onStart: () => void }) {
               </figcaption>
             </figure>
             <figure className="w-[216px] shrink-0">
-              <div className="w-[216px] h-[324px] border-2 border-[#111111] bg-white shadow-[4px_4px_0px_#0B6E3D] overflow-hidden relative">
-                <div style={{ transform: 'scale(0.3)', transformOrigin: 'top left', width: 720, height: 1080 }}>
+              <div className="w-[216px] h-[384px] border-2 border-[#111111] bg-white shadow-[4px_4px_0px_#0B6E3D] overflow-hidden relative">
+                <div style={{ transform: 'scale(0.2)', transformOrigin: 'top left', width: 1080, height: 1920 }}>
                   <BuilderCard state={demo} />
                 </div>
               </div>
@@ -138,8 +138,8 @@ export function Landing({ onStart }: { onStart: () => void }) {
             </figcaption>
           </figure>
           <figure className="w-[270px] shrink-0">
-            <div className="w-[270px] h-[405px] border-2 border-[#111111] bg-white shadow-[3px_3px_0px_#0B6E3D] overflow-hidden relative">
-              <div style={{ transform: 'scale(0.375)', transformOrigin: 'top left', width: 720, height: 1080 }}>
+            <div className="w-[270px] h-[480px] border-2 border-[#111111] bg-white shadow-[3px_3px_0px_#0B6E3D] overflow-hidden relative">
+              <div style={{ transform: 'scale(0.25)', transformOrigin: 'top left', width: 1080, height: 1920 }}>
                 <BuilderCard state={demo} />
               </div>
             </div>
