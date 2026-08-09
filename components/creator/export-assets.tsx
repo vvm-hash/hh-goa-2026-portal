@@ -151,7 +151,7 @@ export async function exportBothAssets(
 
 export function shareOnX() {
   const builderId = BUILDER_ID.split('').reverse().join('').slice(0, 8).toUpperCase()
-  const text = `Just created my official HH Goa 2026 Builder ID & Profile Frame. 🚀\n\nCreate yours:\nhttps://hhbuilder.vercel.app\n\n#HHGoa2026 #FrameInGoa\n\nhttps://hhbuilder.vercel.app/share/${builderId}`
+  const text = `Just created my official HH Goa 2026 Builder ID & Profile Frame. 🚀\n\nReady to build. Ready to connect. Ready for HH Goa 2026.\n\nCreate yours:\nhttps://hhbuilder.vercel.app\n\n#HHGoa2026 #FrameInGoa\n\nhttps://hhbuilder.vercel.app/share/${builderId}`
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
   window.open(url, '_blank', 'noopener,noreferrer')
 }
