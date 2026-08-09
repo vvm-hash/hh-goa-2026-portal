@@ -10,7 +10,7 @@ import { Landing } from '@/components/creator/landing'
 import { PreviewScreen } from '@/components/creator/preview-screen'
 import type { StepKey } from '@/components/creator/steps'
 import { SuccessModal } from '@/components/creator/success-modal'
-import { DEFAULT_STATE, type CreatorState } from '@/components/creator/types'
+import { DEFAULT_STATE, type CreatorState, generateBuilderId } from '@/components/creator/types'
 import { UploadScreen } from '@/components/creator/upload-screen'
 
 type Screen = 'landing' | StepKey
@@ -29,7 +29,7 @@ export default function Page() {
     setState((prev) => ({ ...prev, ...patch }))
 
   const reset = () => {
-    setState(DEFAULT_STATE)
+    setState({ ...DEFAULT_STATE, builderId: generateBuilderId() })
     setExported(false)
     setScreen('landing')
   }
@@ -39,7 +39,10 @@ export default function Page() {
       <Aurora />
 
       {screen === 'landing' ? (
-        <Landing onStart={() => setScreen('upload')} />
+        <Landing onStart={() => {
+          update({ builderId: generateBuilderId() })
+          setScreen('upload')
+        }} />
       ) : (
         <div className="min-h-dvh">
           <FlowHeader step={screen} onExit={reset} />

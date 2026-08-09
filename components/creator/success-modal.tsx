@@ -8,8 +8,11 @@ import {
   exportBuilderId,
   exportProfileFrame,
   shareOnX,
+  renderProfileFramePng,
+  renderBuilderIdPng,
 } from './export-assets'
-import type { CreatorState } from './types'
+import { type CreatorState } from './types'
+import { saveBuilderAssets } from '@/app/actions'
 
 type ExportKey = 'both' | 'frame' | 'card' | null
 
@@ -30,6 +33,18 @@ export function SuccessModal({
 }) {
   const [pending, setPending] = useState<ExportKey>(null)
   const [error, setError] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+
+  const getEls = (): [HTMLElement, HTMLElement] | null => {
+    const frameEl = profileFrameRef.current
+    const cardEl = builderCardRef.current
+    if (!frameEl || !cardEl) {
+      console.error('[export] Preview refs not attached. Is the preview screen mounted?')
+      return null
+    }
+    return [frameEl, cardEl]
+  }
 
   useEffect(() => {
     if (!open) return
@@ -46,21 +61,61 @@ export function SuccessModal({
     if (!open) {
       setPending(null)
       setError(null)
+      setIsUploading(false)
+      setUploadError(null)
+      return
     }
-  }, [open])
+
+    let mounted = true
+    const upload = async () => {
+      try {
+        setIsUploading(true)
+        setUploadError(null)
+        
+        const els = getEls()
+        if (!els) throw new Error('Refs missing')
+        
+        const [profileDataUrl, cardDataUrl] = await Promise.all([
+          renderProfileFramePng(state, els[0]),
+          renderBuilderIdPng(state, els[1])
+        ])
+        
+        const builderId = state.builderId || '7140-620'
+        
+        const dataUrlToBlob = (dataUrl: string, type: string) => {
+          const base64 = dataUrl.split(',')[1]
+          const binary = atob(base64)
+          const array = new Uint8Array(binary.length)
+          for (let i = 0; i < binary.length; i++) {
+            array[i] = binary.charCodeAt(i)
+          }
+          return new Blob([array], { type })
+        }
+
+        const formData = new FormData()
+        formData.append('builderId', builderId)
+        formData.append('profile', dataUrlToBlob(profileDataUrl, 'image/png'), 'profile.png')
+        formData.append('card', dataUrlToBlob(cardDataUrl, 'image/png'), 'card.png')
+
+        const result = await saveBuilderAssets(formData)
+        
+        if (!result.success) {
+          throw new Error(result.error || 'Unknown upload error')
+        }
+      } catch (err: any) {
+        console.error('Background upload failed:', err)
+        if (mounted) setUploadError(`Upload failed: ${err.message || 'Check server logs'}`)
+      } finally {
+        if (mounted) setIsUploading(false)
+      }
+    }
+    
+    upload()
+
+    return () => { mounted = false }
+  }, [open, state])
 
   if (!open) return null
-
-  const getEls = (): [HTMLElement, HTMLElement] | null => {
-    const frameEl = profileFrameRef.current
-    const cardEl = builderCardRef.current
-    if (!frameEl || !cardEl) {
-      // eslint-disable-next-line no-console
-      console.error('[export] Preview refs not attached. Is the preview screen mounted?')
-      return null
-    }
-    return [frameEl, cardEl]
-  }
 
   const runExport = async (key: Exclude<ExportKey, null>, task: () => Promise<void>) => {
     setError(null)
@@ -181,22 +236,22 @@ export function SuccessModal({
             variant="ghost"
             size="lg"
             className="h-11 w-full border-2 border-[#111111]/20 text-[#5A5A4A] hover:border-[#111111]/40 hover:text-[#111111]"
-            onClick={() => {
-              const els = getEls()
-              if (!els) return
-              void runExport('card', async () => {
-                await exportBuilderId(state, els[1])
-                shareOnX()
-              })
-            }}
+            disabled={isUploading}
+            onClick={() => shareOnX(state.builderId || '7140-620')}
           >
-            Share on X ↗
+            {isUploading ? 'Preparing Share Link...' : 'Share on X ↗'}
           </Button>
         </div>
 
         {error && (
           <p className="mt-3 border-2 border-[#D93025] bg-[#D93025]/10 px-3 py-2 text-sm text-[#D93025]">
             {error}
+          </p>
+        )}
+        
+        {uploadError && (
+          <p className="mt-3 border-2 border-[#D93025] bg-[#D93025]/10 px-3 py-2 text-sm text-[#D93025]">
+            {uploadError}
           </p>
         )}
 

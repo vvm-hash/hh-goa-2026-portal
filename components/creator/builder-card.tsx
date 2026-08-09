@@ -1,6 +1,6 @@
 import React from 'react'
 import { PhotoLayer } from './photo-layer'
-import { type CreatorState, BUILDER_ID } from './types'
+import { type CreatorState } from './types'
 
 interface BuilderCardProps {
   state: CreatorState
@@ -10,7 +10,7 @@ export function BuilderCard({ state }: BuilderCardProps) {
   const location = state.location?.trim() || 'GOA, INDIA'
   const teamName = state.teamName?.trim() || 'SOLO BUILDER'
   const role = state.role?.trim() || 'CHAOS ENGINEER'
-  const builderId = BUILDER_ID.split('').reverse().join('').slice(0, 8).toUpperCase()
+  const builderId = state.builderId || '7140-620'
 
   return (
     <div className="w-[1080px] h-[1920px] bg-[#F6F1E8] border-[16px] border-black flex flex-col font-sans box-border">

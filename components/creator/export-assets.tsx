@@ -2,7 +2,7 @@
 'use client'
 
 import { toPng } from 'html-to-image'
-import { type CreatorState, BUILDER_ID } from './types'
+import { type CreatorState } from './types'
 
 // Set to true locally if you need to debug an export failure — logs
 // pre-capture and onclone DOM snapshots to the console. Off by default so
@@ -149,9 +149,9 @@ export async function exportBothAssets(
   downloadDataUrl(builderId, 'hhgoa-builder-id.png')
 }
 
-export function shareOnX() {
-  const builderId = BUILDER_ID.split('').reverse().join('').slice(0, 8).toUpperCase()
-  const text = `Just created my official HH Goa 2026 Builder ID & Profile Frame. 🚀\n\nReady to build. Ready to connect. Ready for HH Goa 2026.\n\nCreate yours:\nhttps://hhbuilder.vercel.app\n\n#HHGoa2026 #FrameInGoa\n\nhttps://hhbuilder.vercel.app/share/${builderId}`
+export function shareOnX(builderId: string) {
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://hhbuilder.vercel.app'
+  const text = `Just created my official HH Goa 2026 Builder ID & Profile Frame. 🚀\n\nReady to build. Ready to connect. Ready for HH Goa 2026.\n\nCreate yours:\n${baseUrl}\n\n#HHGoa2026 #FrameInGoa\n\n${baseUrl}/share/${builderId}`
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`
   window.open(url, '_blank', 'noopener,noreferrer')
 }

@@ -25,6 +25,14 @@ export type CreatorState = {
   teamName: string
   accent: AccentKey
   template: Template
+  builderId: string
+}
+
+export function generateBuilderId(): string {
+  const randomDigits = (n: number) => {
+    return Array.from({ length: n }, () => Math.floor(Math.random() * 10)).join('')
+  }
+  return `${randomDigits(4)}-${randomDigits(3)}`
 }
 
 export const DEFAULT_STATE: CreatorState = {
@@ -38,9 +46,8 @@ export const DEFAULT_STATE: CreatorState = {
   teamName: 'Solo Builder',
   accent: 'default',
   template: 'frame',
+  builderId: '',
 }
-
-export const BUILDER_ID = 'GOA-2026-0417'
 
 export type TitleRarity = 'common' | 'uncommon' | 'rare'
 
