@@ -42,7 +42,6 @@ export function PhotoLayer({
     <img
       src={state.imageSrc || '/placeholder.svg'}
       alt="Your uploaded portrait"
-      crossOrigin="anonymous"
       className={cn('absolute max-w-none', className)}
       onLoad={(e) => setIsPortrait(e.currentTarget.naturalHeight > e.currentTarget.naturalWidth)}
       style={{

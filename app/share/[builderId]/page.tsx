@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 
-import { list } from '@vercel/blob'
+
 import { getBlobConfig } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
@@ -12,20 +12,22 @@ export async function generateMetadata({ params }: { params: Promise<{ builderId
   let ogImage = '/hhgoalogo.jpg'
   
   try {
-    const { blobs } = await list({ 
-      prefix: `records/${builderId}.json`,
-      ...getBlobConfig() 
-    })
-    if (blobs.length > 0 && blobs[0].url) {
-      const res = await fetch(blobs[0].url)
+    const token = process.env.BLOB_READ_WRITE_TOKEN || ''
+    const match = token.match(/^vercel_blob_rw_([^_]+)_/)
+    const storeId = process.env.BLOB_STORE_ID || match?.[1]
+    
+    if (storeId) {
+      const subdomain = storeId.replace(/^store_/, '').toLowerCase()
+      const recordUrl = `https://${subdomain}.public.blob.vercel-storage.com/records/${builderId}.json`
+      const res = await fetch(recordUrl)
       if (res.ok) {
         const data = await res.json()
         if (data.cardUrl) ogImage = data.cardUrl
       } else {
-        console.error(`[Metadata] Failed to fetch JSON data from ${blobs[0].url}. Status: ${res.status}`)
+        console.error(`[Metadata] Failed to fetch JSON data from ${recordUrl}. Status: ${res.status}`)
       }
     } else {
-      console.warn(`[Metadata] No Blob record found for Builder ID: ${builderId}`)
+      console.warn(`[Metadata] Could not determine Blob store ID for Builder ID: ${builderId}`)
     }
   } catch (error) {
     console.error('[Metadata] Failed to fetch OG image from Blob:', error)
@@ -50,38 +52,23 @@ export async function generateMetadata({ params }: { params: Promise<{ builderId
 
 export default async function SharePage({ params }: { params: Promise<{ builderId: string }> }) {
   const resolvedParams = await params
-  console.log("params =", resolvedParams)
-  console.log("builderId =", resolvedParams?.builderId)
-  
   const builderId = resolvedParams.builderId
   let profileUrl = null
   let cardUrl = null
 
   try {
-    const prefix = `records/${builderId}.json`
+    const token = process.env.BLOB_READ_WRITE_TOKEN || ''
+    const match = token.match(/^vercel_blob_rw_([^_]+)_/)
+    const storeId = process.env.BLOB_STORE_ID || match?.[1]
     
-    console.log(`\n\n=== [Diagnostic] Share Page started for Builder ID: ${builderId} ===`)
-    console.log(`[Diagnostic] Share page searching for Builder ID: ${builderId}`)
-    console.log(`[Diagnostic] Share page prefix: ${prefix}`)
-    
-    const { blobs } = await list({ 
-      prefix,
-      ...getBlobConfig() 
-    })
-    
-    console.log(`[Diagnostic] list() returned ${blobs.length} blobs`)
-    
-    if (blobs.length === 0) {
-      console.error(`[Diagnostic] FATAL: list() returned 0 blobs for prefix "${prefix}"!`)
-      throw new Error(`Builder record not found in Blob storage for ID: ${builderId}`)
+    if (!storeId) {
+      console.error(`[Diagnostic] FATAL: Could not determine Blob store ID!`)
+      throw new Error(`Configuration error: Blob store ID not found`)
     }
 
-    const recordUrl = blobs[0].url
-    console.log(`[Share Page] Found record in Blob! URL: ${recordUrl}`)
-    console.log(`[Share Page] Attempting to fetch JSON data from ${recordUrl}...`)
-    
+    const subdomain = storeId.replace(/^store_/, '').toLowerCase()
+    const recordUrl = `https://${subdomain}.public.blob.vercel-storage.com/records/${builderId}.json`
     const res = await fetch(recordUrl)
-    console.log(`[Share Page] fetch() returned status: ${res.status} ${res.statusText}`)
     
     if (!res.ok) {
       console.error(`[Share Page FATAL] Failed to fetch JSON data. Status: ${res.status}`)
@@ -89,14 +76,10 @@ export default async function SharePage({ params }: { params: Promise<{ builderI
     }
 
     const rawText = await res.text()
-    console.log(`[Share Page] Raw fetched JSON text:`, rawText)
     
     const data = JSON.parse(rawText)
     profileUrl = data.profileUrl
     cardUrl = data.cardUrl
-
-    console.log(`[Share Page] Parsed URLs -> profileUrl: ${profileUrl}, cardUrl: ${cardUrl}`)
-    console.log(`=== [Share Page END] ===\n\n`)
 
     if (!profileUrl || !cardUrl) {
       console.error(`[Share Page FATAL] JSON record is missing image URLs!`)
@@ -121,9 +104,9 @@ export default async function SharePage({ params }: { params: Promise<{ builderI
   return (
     <div className="min-h-dvh bg-[#F6F1E8] p-8 flex flex-col items-center justify-center font-sans overflow-x-hidden">
       <div className="text-center mb-10 max-w-2xl mx-auto">
-        <div className="mb-5 inline-flex items-center gap-2 border-2 border-[#111111] bg-[#0B6E3D] px-3 py-1.5 shadow-[2px_2px_0px_#111111]">
-          <span className="size-1.5 rounded-full bg-[#FFE600]" />
-          <span className="font-mono text-[9px] font-bold tracking-[0.22em] text-[#F7F3E8] uppercase">
+        <div className="mb-5 inline-flex items-center gap-2.5 border-2 border-[#111111] bg-[#0B6E3D] px-4 py-2 shadow-[3px_3px_0px_#111111]">
+          <img src="/hhgoalogo.jpg" alt="HH Goa" className="size-6 object-cover border-[1.5px] border-[#111111] rounded-full" />
+          <span className="font-mono text-xs font-bold tracking-[0.22em] text-[#F7F3E8] uppercase">
             HACKERHOUSE GOA
           </span>
         </div>
@@ -132,6 +115,9 @@ export default async function SharePage({ params }: { params: Promise<{ builderI
         </h1>
         <p className="text-[#5A5A4A] mx-auto text-lg font-mono tracking-widest uppercase">
           Think you&apos;ve got what it takes? Create yours below.
+        </p>
+        <p className="mt-4 font-mono text-sm font-bold tracking-widest text-[#0B6E3D] uppercase">
+          #FrameInGoa · HH Goa 2026
         </p>
       </div>
 

@@ -119,7 +119,7 @@ export function CustomizeScreen({
               {(
                 [
                   ['frame', 'Profile Frame', 'For avatars & socials'],
-                  ['card', 'Builder ID Card', 'Your official pass'],
+                  ['card', 'Builder ID Card', 'For posts & sharing'],
                 ] as [Template, string, string][]
               ).map(([key, title, desc]) => (
                 <button

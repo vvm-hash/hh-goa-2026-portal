@@ -65,12 +65,16 @@ export function Landing({ onStart }: { onStart: () => void }) {
             <div className="mt-6 flex items-center gap-3">
               <div className="h-0.5 w-8 bg-[#FF0A7A]" />
               <span className="font-mono text-[10px] tracking-[0.22em] text-[#5A5A4A]">
-                SUN / SEA / BUILD
+                CODE • BUILD • LAUNCH
               </span>
             </div>
 
+            <p className="mt-3 font-mono text-sm tracking-widest text-[#0B6E3D] font-bold">
+              #FrameInGoa · HH Goa 2026
+            </p>
+
             <p className="mt-5 max-w-sm text-[15px] leading-relaxed text-[#5A5A4A]">
-              Upload one selfie and generate your official Builder ID and Profile Frame for HH Goa 2026.
+              Capture a selfie or upload your favorite photo to instantly generate your HH Goa 2026 Builder ID and Profile Frame.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -151,7 +155,7 @@ export function Landing({ onStart }: { onStart: () => void }) {
 
         {/* footer strip */}
         <div className="border-t-2 border-[#111111] py-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-start gap-5">
             <span className="font-mono text-[9px] tracking-[0.2em] text-[#5A5A4A] uppercase">
               HACKERHOUSE GOA · 28–31 OCT 2026
             </span>
@@ -160,9 +164,6 @@ export function Landing({ onStart }: { onStart: () => void }) {
               <span className="size-2 rounded-full bg-[#FFE600]" />
               <span className="size-2 rounded-full bg-[#0B6E3D]" />
             </div>
-            <span className="font-mono text-[9px] tracking-[0.2em] text-[#5A5A4A] uppercase">
-              #FrameInGoa
-            </span>
           </div>
         </div>
       </div>

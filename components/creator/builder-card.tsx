@@ -34,10 +34,10 @@ export function BuilderCard({ state }: BuilderCardProps) {
             </div>
           </div>
           <div className="font-mono text-base tracking-widest text-[#888888] mb-1">
-            LAT 15.2993° N
+            ROLE
           </div>
           <div className="font-mono text-base tracking-widest text-[#888888]">
-            LON 74.1240° E
+            PARTICIPANT
           </div>
         </div>
       </div>
@@ -175,7 +175,7 @@ export function BuilderCard({ state }: BuilderCardProps) {
            #FRAMEINGOA
          </div>
          <div className="font-mono text-4xl font-bold text-black uppercase">
-           SESSION / OCT 26
+           OCT '26
          </div>
       </div>
       

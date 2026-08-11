@@ -1,11 +1,12 @@
 // components/creator/preview-screen.tsx
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { BuilderCard } from './builder-card'
 import { ProfileFrame } from './profile-frame'
 import type { CreatorState } from './types'
+import { renderProfileFramePng, renderBuilderIdPng } from './export-assets'
 
 export function PreviewScreen({
   state,
@@ -16,10 +17,49 @@ export function PreviewScreen({
 }: {
   state: CreatorState
   onBack: () => void
-  onExport: () => void
+  onExport: (profileBlob: Blob, cardBlob: Blob) => void
   profileFrameRef?: React.RefObject<HTMLDivElement | null>
   builderCardRef?: React.RefObject<HTMLDivElement | null>
 }) {
+  const [isGenerating, setIsGenerating] = useState(false)
+
+  const handleExport = async () => {
+    try {
+      setIsGenerating(true)
+      
+      const frameEl = profileFrameRef?.current
+      const cardEl = builderCardRef?.current
+      if (!frameEl || !cardEl) throw new Error('Refs missing')
+      
+      const [profileDataUrl, cardDataUrl] = await Promise.all([
+        renderProfileFramePng(state, frameEl),
+        renderBuilderIdPng(state, cardEl)
+      ])
+      
+      setIsGenerating(false)
+      
+      const dataUrlToBlob = (dataUrl: string, type: string) => {
+        const base64 = dataUrl.split(',')[1]
+        const binary = atob(base64)
+        const array = new Uint8Array(binary.length)
+        for (let i = 0; i < binary.length; i++) {
+          array[i] = binary.charCodeAt(i)
+        }
+        return new Blob([array], { type })
+      }
+
+      const profileBlob = dataUrlToBlob(profileDataUrl, 'image/png')
+      const cardBlob = dataUrlToBlob(cardDataUrl, 'image/png')
+
+      // Open Success Modal immediately and pass blobs to parent for uploading
+      onExport(profileBlob, cardBlob)
+
+    } catch (err: any) {
+      console.error('Generation failed:', err)
+      setIsGenerating(false)
+      // Only set local error if generation failed (since modal isn't open yet)
+    }
+  }
   return (
     <section className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
       {/* step header */}
@@ -78,23 +118,27 @@ export function PreviewScreen({
           variant="outline"
           size="lg"
           onClick={onBack}
+          disabled={isGenerating}
           className="w-full px-6 sm:w-auto"
         >
           ← Keep editing
         </Button>
-        <Button
-          size="lg"
-          onClick={onExport}
-          className="w-full px-10 sm:w-auto"
-          style={{
-            background: '#FF0A7A',
-            borderColor: '#111111',
-            color: 'white',
-            boxShadow: '4px 4px 0px #111111',
-          }}
-        >
-          Export assets →
-        </Button>
+        <div className="flex flex-col items-center gap-2">
+          <Button
+            size="lg"
+            onClick={handleExport}
+            disabled={isGenerating}
+            className="w-full px-10 sm:w-auto"
+            style={{
+              background: '#FF0A7A',
+              borderColor: '#111111',
+              color: 'white',
+              boxShadow: isGenerating ? 'none' : '4px 4px 0px #111111',
+            }}
+          >
+            {isGenerating ? 'Generating... ⏳' : 'Export assets →'}
+          </Button>
+        </div>
       </div>
     </section>
   )

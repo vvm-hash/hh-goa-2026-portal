@@ -4,19 +4,9 @@
 import { toPng } from 'html-to-image'
 import { type CreatorState } from './types'
 
-// Set to true locally if you need to debug an export failure — logs
-// pre-capture and onclone DOM snapshots to the console. Off by default so
-// normal usage stays quiet.
-const DEBUG_EXPORT = false
 
-function debugLog(label: string, ...args: unknown[]) {
-  if (DEBUG_EXPORT) {
-    // eslint-disable-next-line no-console
-    console.debug(`[export:${label}]`, ...args)
-  }
-}
 
-function downloadDataUrl(dataUrl: string, filename: string) {
+export function downloadDataUrl(dataUrl: string, filename: string) {
   const link = document.createElement('a')
   link.href = dataUrl
   link.download = filename
@@ -48,12 +38,6 @@ async function waitForImages(root: HTMLElement) {
       } catch {
         // A decode failure shouldn't hard-fail the whole export.
       }
-      debugLog('images', `img[${i}] settled`, {
-        src: img.src.slice(0, 80),
-        complete: img.complete,
-        naturalWidth: img.naturalWidth,
-        naturalHeight: img.naturalHeight,
-      })
     }),
   )
 }
@@ -78,7 +62,29 @@ async function captureLiveElement({
   // Make sure all images inside the live element are decoded before capture.
   await waitForImages(element)
 
-  debugLog(label, 'capturing live element with html-to-image')
+  // --- DIAGNOSTICS START ---
+  const imgs = Array.from(element.querySelectorAll('img'))
+  
+  await Promise.all(imgs.map(img => {
+    if (img.complete && img.naturalHeight !== 0) {
+      return Promise.resolve()
+    }
+    return new Promise((resolve, reject) => {
+      const handleLoad = () => {
+        img.removeEventListener('load', handleLoad)
+        img.removeEventListener('error', handleError)
+        resolve(true)
+      }
+      const handleError = (e: any) => {
+        img.removeEventListener('load', handleLoad)
+        img.removeEventListener('error', handleError)
+        reject(new Error(`Failed to load image in preview: ${img.src}`))
+      }
+      img.addEventListener('load', handleLoad)
+      img.addEventListener('error', handleError)
+    })
+  }))
+  // --- DIAGNOSTICS END ---
 
   return await toPng(element, {
     pixelRatio: 2, // Forces high-res export

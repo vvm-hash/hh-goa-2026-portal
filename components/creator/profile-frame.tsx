@@ -47,9 +47,6 @@ export function ProfileFrame({ state }: ProfileFrameProps) {
           {/* Header Strip */}
           <div className="flex justify-between items-center p-5 pl-8 pr-8 border-b-[6px] border-[#111111] bg-white/90">
              <div className="flex gap-4 items-center">
-               <div className="font-mono text-[10px] font-bold tracking-[0.2em] text-[#111111] uppercase bg-[#FFE600] px-2 py-0.5 border-[2px] border-[#111111]">
-                 Session 01
-               </div>
                <div className="font-mono text-[9px] tracking-widest text-[#5A5A4A] uppercase">
                  Arabian Sea • Golden Hour
                </div>
