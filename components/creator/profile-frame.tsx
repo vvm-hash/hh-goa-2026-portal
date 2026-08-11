@@ -2,6 +2,7 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 import { PhotoLayer } from './photo-layer'
 import { type CreatorState } from './types'
+import { HH_LOGO_BASE64 } from '@/lib/logo-base64'
 
 interface ProfileFrameProps {
   state: CreatorState
@@ -122,7 +123,7 @@ export function ProfileFrame({ state }: ProfileFrameProps) {
              <div className="flex items-center gap-5">
                 {/* Logo Sticker */}
                 <div className="w-[60px] h-[60px] bg-white border-[3px] border-[#111111] shadow-[4px_4px_0px_#111111] shrink-0 overflow-hidden rotate-[-3deg]">
-                  <img src="/hhgoalogo.jpg" alt="HH Goa" className="w-full h-full object-cover" />
+                  <img src={HH_LOGO_BASE64} alt="HH Goa" className="w-full h-full object-cover" />
                 </div>
                 <div className="flex flex-col justify-end">
                   <div className="font-mono text-[10px] font-bold tracking-[0.3em] uppercase text-[#FFE600] mb-1">

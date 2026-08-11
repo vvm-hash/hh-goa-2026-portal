@@ -1,7 +1,7 @@
 // components/creator/export-assets.tsx
 'use client'
 
-import { toPng } from 'html-to-image'
+import { domToPng } from 'modern-screenshot'
 import { type CreatorState } from './types'
 
 
@@ -49,8 +49,9 @@ async function waitForImages(root: HTMLElement) {
  * HOW IT WORKS
  * ─────────────
  * We target the exact DOM element the user is already looking at.
- * By using html-to-image with pixelRatio: 2 and transform: scale(1),
+ * By using modern-screenshot (a highly robust dom-to-image alternative) with scale: 2,
  * we bypass the UI constraints and extract a pristine, 1:1 render.
+ * We also use a double-render pass to force Safari to paint properly.
  */
 async function captureLiveElement({
   element,
@@ -86,15 +87,29 @@ async function captureLiveElement({
   }))
   // --- DIAGNOSTICS END ---
 
-  return await toPng(element, {
-    pixelRatio: 2, // Forces high-res export
+  const options = {
+    scale: 2, // Forces high-res export
+    width: element.offsetWidth,
+    height: element.offsetHeight,
     backgroundColor: '#F6F1E8', // Ensures the cream background is captured
     style: { 
       transform: 'scale(1)', 
       transformOrigin: 'top left',
       margin: '0'
+    },
+    fetch: {
+      bypassingCache: true, // Bypass cache to avoid cors issues
     }
-  })
+  }
+
+  // Double execution: First pass forces layout computation and resource fetching
+  await domToPng(element, options)
+  
+  // Short wait
+  await wait(100)
+
+  // Second pass: Captures the fully painted state (fixes Safari issues)
+  return await domToPng(element, options)
 }
 
 // ─── Public API ──────────────────────────────────────────────────────────────

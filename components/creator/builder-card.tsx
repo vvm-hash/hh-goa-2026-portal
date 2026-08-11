@@ -2,6 +2,7 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 import { PhotoLayer } from './photo-layer'
 import { type CreatorState } from './types'
+import { HH_LOGO_BASE64 } from '@/lib/logo-base64'
 
 interface BuilderCardProps {
   state: CreatorState
@@ -92,7 +93,7 @@ export function BuilderCard({ state }: BuilderCardProps) {
           
           {/* Logo Sticker */}
           <div className="absolute bottom-8 right-6 w-[120px] h-[120px] bg-white border-[8px] border-black shadow-[8px_8px_0px_#FF0A7A] rounded-full overflow-hidden rotate-[15deg] z-30">
-            <img src="/hhgoalogo.jpg" alt="HH Goa" className="w-full h-full object-cover" />
+            <img src={HH_LOGO_BASE64} alt="HH Goa" className="w-full h-full object-cover" />
           </div>
         </div>
 

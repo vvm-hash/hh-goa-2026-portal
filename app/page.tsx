@@ -49,6 +49,10 @@ export default function Page() {
     
     const executeUpload = async () => {
       try {
+        if (shareLinkStatus === 'uploading' || shareLinkStatus === 'success') {
+          return
+        }
+
         setShareLinkStatus('uploading')
         setShareLinkError(null)
         
@@ -133,7 +137,14 @@ export default function Page() {
           {screen === 'preview' && (
             <PreviewScreen
               state={state}
-              onBack={() => setScreen('customize')}
+              onBack={() => {
+                setScreen('customize')
+                if (shareLinkStatus !== 'idle') {
+                  setShareLinkStatus('idle')
+                  setShareLinkError(null)
+                  update({ builderId: generateBuilderId() })
+                }
+              }}
               onExport={handleExport}
               profileFrameRef={profileFrameRef}
               builderCardRef={builderCardRef}

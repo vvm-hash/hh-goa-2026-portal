@@ -31,17 +31,20 @@ export function UploadScreen({
     
     const file = await convertHeicToPngIfNeeded(rawFile)
     
-    const objectUrl = URL.createObjectURL(file)
-    
-    const img = new Image()
-    const finalize = async () => {
-      try { await img.decode() } catch {}
-      onImage(objectUrl)
+    const reader = new FileReader()
+    reader.onload = () => {
+      const dataUrl = reader.result as string
+      const img = new Image()
+      const finalize = async () => {
+        try { await img.decode() } catch {}
+        onImage(dataUrl)
+      }
+      
+      img.onload = finalize
+      img.onerror = () => onImage(dataUrl)
+      img.src = dataUrl
     }
-    
-    img.onload = finalize
-    img.onerror = () => onImage(objectUrl)
-    img.src = objectUrl
+    reader.readAsDataURL(file)
   }
 
   function stopWebcam() {
@@ -125,10 +128,8 @@ export function UploadScreen({
     ctx.scale(-1, 1)
     ctx.drawImage(video, 0, 0, width, height)
     
-    canvas.toBlob((blob) => {
-      if (!blob) return
-      setCapturedPhoto(URL.createObjectURL(blob))
-    }, 'image/png')
+    const dataUrl = canvas.toDataURL('image/png')
+    setCapturedPhoto(dataUrl)
   }
 
   function handleRetake() {
