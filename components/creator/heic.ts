@@ -26,14 +26,15 @@ export function isHeicFile(file: File): boolean {
 export async function convertHeicToPngIfNeeded(file: File): Promise<File> {
   if (!isHeicFile(file)) return file
 
-  const heic2any = (await import('heic2any')).default
+  const { heicTo } = await import('heic-to')
 
-  const result = await heic2any({
+  const result = await heicTo({
     blob: file,
-    toType: 'image/png',
+    type: 'image/png',
     quality: 0.92,
   })
 
+  // heic-to returns a Blob
   const blob = Array.isArray(result) ? result[0] : result
   const newName = file.name.replace(HEIC_EXTENSION, '.png') || 'converted.png'
 

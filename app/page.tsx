@@ -36,6 +36,9 @@ export default function Page() {
     setState((prev) => ({ ...prev, ...patch }))
 
   const reset = () => {
+    if (state.imageSrc && state.imageSrc.startsWith('blob:')) {
+      URL.revokeObjectURL(state.imageSrc)
+    }
     setState({ ...DEFAULT_STATE, builderId: generateBuilderId() })
     setExported(false)
     setScreen('landing')
@@ -99,7 +102,12 @@ export default function Page() {
           {screen === 'upload' && (
             <UploadScreen
               imageSrc={state.imageSrc}
-              onImage={(src) => update({ imageSrc: src })}
+              onImage={(src) => {
+                if (state.imageSrc && state.imageSrc.startsWith('blob:') && state.imageSrc !== src) {
+                  URL.revokeObjectURL(state.imageSrc)
+                }
+                update({ imageSrc: src })
+              }}
               onNext={() => setScreen('crop')}
             />
           )}

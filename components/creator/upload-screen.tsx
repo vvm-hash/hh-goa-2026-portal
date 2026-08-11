@@ -31,21 +31,17 @@ export function UploadScreen({
     
     const file = await convertHeicToPngIfNeeded(rawFile)
     
-    const reader = new FileReader()
-    reader.onload = () => {
-      const dataUrl = reader.result as string
-      
-      const img = new Image()
-      const finalize = async () => {
-        try { await img.decode() } catch {}
-        onImage(dataUrl)
-      }
-      
-      img.onload = finalize
-      img.onerror = () => onImage(dataUrl)
-      img.src = dataUrl
+    const objectUrl = URL.createObjectURL(file)
+    
+    const img = new Image()
+    const finalize = async () => {
+      try { await img.decode() } catch {}
+      onImage(objectUrl)
     }
-    reader.readAsDataURL(file)
+    
+    img.onload = finalize
+    img.onerror = () => onImage(objectUrl)
+    img.src = objectUrl
   }
 
   function stopWebcam() {
@@ -54,11 +50,14 @@ export function UploadScreen({
     if (videoRef.current) videoRef.current.srcObject = null
   }
 
-  function closeWebcam() {
+  function closeWebcam(keepBlob = false) {
     stopWebcam()
     setWebcamOpen(false)
     setWebcamError(null)
     setWebcamLoading(false)
+    if (!keepBlob && capturedPhoto && capturedPhoto.startsWith('blob:')) {
+      URL.revokeObjectURL(capturedPhoto)
+    }
     setCapturedPhoto(null)
   }
 
@@ -125,11 +124,20 @@ export function UploadScreen({
     ctx.translate(width, 0)
     ctx.scale(-1, 1)
     ctx.drawImage(video, 0, 0, width, height)
-    setCapturedPhoto(canvas.toDataURL('image/png'))
+    
+    canvas.toBlob((blob) => {
+      if (!blob) return
+      setCapturedPhoto(URL.createObjectURL(blob))
+    }, 'image/png')
   }
 
-  function handleRetake() { setCapturedPhoto(null) }
-  function handleUsePhoto() { if (!capturedPhoto) return; onImage(capturedPhoto); closeWebcam() }
+  function handleRetake() {
+    if (capturedPhoto && capturedPhoto.startsWith('blob:')) {
+      URL.revokeObjectURL(capturedPhoto)
+    }
+    setCapturedPhoto(null)
+  }
+  function handleUsePhoto() { if (!capturedPhoto) return; onImage(capturedPhoto); closeWebcam(true) }
   function handleTakeSelfie() { void openWebcam() }
 
   useEffect(() => { return () => { stopWebcam() } }, [])
@@ -283,7 +291,7 @@ export function UploadScreen({
                   <Button variant="outline" onClick={() => { closeWebcam(); browseInputRef.current?.click() }}>
                     Browse Device
                   </Button>
-                  <Button onClick={closeWebcam}>Close</Button>
+                  <Button onClick={() => closeWebcam()}>Close</Button>
                 </div>
               </div>
             ) : (
@@ -322,7 +330,7 @@ export function UploadScreen({
                     </div>
                   ) : (
                     <div className="flex gap-3">
-                      <Button variant="outline" onClick={closeWebcam} className="flex-1">Cancel</Button>
+                      <Button variant="outline" onClick={() => closeWebcam()} className="flex-1">Cancel</Button>
                       <Button onClick={handleCapture} disabled={webcamLoading} className="flex-1 disabled:border-[#111111]/20 disabled:bg-[#E8E3D4] disabled:text-[#5A5A4A] disabled:shadow-none">
                         Capture
                       </Button>

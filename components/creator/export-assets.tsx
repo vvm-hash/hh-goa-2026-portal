@@ -89,7 +89,6 @@ async function captureLiveElement({
   return await toPng(element, {
     pixelRatio: 2, // Forces high-res export
     backgroundColor: '#F6F1E8', // Ensures the cream background is captured
-    cacheBust: true, // Prevents cross-origin cache blanking
     style: { 
       transform: 'scale(1)', 
       transformOrigin: 'top left',
