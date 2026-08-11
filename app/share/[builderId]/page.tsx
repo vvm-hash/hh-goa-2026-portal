@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 import { list } from '@vercel/blob'
+import { getBlobConfig } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,7 +12,10 @@ export async function generateMetadata({ params }: { params: Promise<{ builderId
   let ogImage = '/hhgoalogo.jpg'
   
   try {
-    const { blobs } = await list({ prefix: `records/${builderId}.json` })
+    const { blobs } = await list({ 
+      prefix: `records/${builderId}.json`,
+      ...getBlobConfig() 
+    })
     if (blobs.length > 0 && blobs[0].url) {
       const res = await fetch(blobs[0].url)
       if (res.ok) {
@@ -58,7 +62,10 @@ export default async function SharePage({ params }: { params: Promise<{ builderI
     console.log(`\n\n=== [Share Page START] Builder ID: ${builderId} ===`)
     console.log(`[Share Page] Fetching Blob list for prefix: "${prefix}"`)
     
-    const { blobs } = await list({ prefix })
+    const { blobs } = await list({ 
+      prefix,
+      ...getBlobConfig() 
+    })
     
     if (blobs.length === 0) {
       console.error(`[Share Page FATAL] list() returned 0 blobs for prefix "${prefix}"!`)

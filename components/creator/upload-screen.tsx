@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { convertHeicToPngIfNeeded } from './heic'
 
 export function UploadScreen({
   imageSrc,
@@ -24,11 +25,26 @@ export function UploadScreen({
   const [webcamLoading, setWebcamLoading] = useState(false)
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null)
 
-  function handleFiles(files: FileList | null) {
-    const file = files?.[0]
-    if (!file || !file.type.startsWith('image/')) return
+  async function handleFiles(files: FileList | null) {
+    const rawFile = files?.[0]
+    if (!rawFile || !rawFile.type.startsWith('image/')) return
+    
+    const file = await convertHeicToPngIfNeeded(rawFile)
+    
     const reader = new FileReader()
-    reader.onload = () => onImage(reader.result as string)
+    reader.onload = () => {
+      const dataUrl = reader.result as string
+      
+      const img = new Image()
+      const finalize = async () => {
+        try { await img.decode() } catch {}
+        onImage(dataUrl)
+      }
+      
+      img.onload = finalize
+      img.onerror = () => onImage(dataUrl)
+      img.src = dataUrl
+    }
     reader.readAsDataURL(file)
   }
 

@@ -1,6 +1,7 @@
 'use server'
 
 import { put, list } from '@vercel/blob'
+import { getBlobConfig } from '@/lib/utils'
 
 export async function saveBuilderAssets(formData: FormData) {
   try {
@@ -11,7 +12,10 @@ export async function saveBuilderAssets(formData: FormData) {
     console.log(`\n\n=== [Blob Pipeline START] Builder ID: ${builderId} ===`)
     
     console.log(`[Blob Pipeline] Checking if record exists: records/${builderId}.json`)
-    const { blobs } = await list({ prefix: `records/${builderId}.json` })
+    const { blobs } = await list({ 
+      prefix: `records/${builderId}.json`,
+      ...getBlobConfig() 
+    })
     
     if (blobs.length > 0 && blobs[0].url) {
       console.log(`[Blob Pipeline] Record exists! Fetching from ${blobs[0].url}...`)
@@ -28,6 +32,7 @@ export async function saveBuilderAssets(formData: FormData) {
       access: 'public',
       contentType: 'image/png',
       addRandomSuffix: false,
+      ...getBlobConfig()
     })
     console.log(`[Blob Pipeline] Profile frame uploaded successfully. URL: ${profileBlob.url}`)
 
@@ -36,6 +41,7 @@ export async function saveBuilderAssets(formData: FormData) {
       access: 'public',
       contentType: 'image/png',
       addRandomSuffix: false,
+      ...getBlobConfig()
     })
     console.log(`[Blob Pipeline] Builder card uploaded successfully. URL: ${cardBlob.url}`)
 
@@ -50,6 +56,7 @@ export async function saveBuilderAssets(formData: FormData) {
       access: 'public',
       contentType: 'application/json',
       addRandomSuffix: false,
+      ...getBlobConfig()
     })
     console.log(`[Blob Pipeline] JSON record saved successfully. URL: ${jsonBlob.url}`)
     console.log(`=== [Blob Pipeline END] ===\n\n`)
