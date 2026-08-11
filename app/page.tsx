@@ -44,28 +44,27 @@ export default function Page() {
     setScreen('landing')
   }
 
+  const isUploadingRef = useRef(false)
+
   const handleExport = (profileBlob: Blob, cardBlob: Blob) => {
     setExported(true)
     
     const executeUpload = async () => {
-      try {
-        if (shareLinkStatus === 'uploading' || shareLinkStatus === 'success') {
-          return
-        }
+      // Prevent concurrent uploads using a persistent ref lock
+      if (isUploadingRef.current) return
+      isUploadingRef.current = true
 
+      try {
         setShareLinkStatus('uploading')
         setShareLinkError(null)
         
         const builderId = state.builderId || '7140-620'
         
-        const [compressedProfile, compressedCard] = await Promise.all([
-          compressPngIfNeeded(profileBlob),
-          compressPngIfNeeded(cardBlob)
-        ])
-        
+        // Upload the generated blobs directly without the risky canvas-based downscaling
+        // to avoid silent browser hangs on large image processing.
         const [profileUrl, cardUrl] = await Promise.all([
-          uploadWithRetry(`profiles/${builderId}.png`, compressedProfile),
-          uploadWithRetry(`cards/${builderId}.png`, compressedCard)
+          uploadWithRetry(`profiles/${builderId}.jpg`, profileBlob),
+          uploadWithRetry(`cards/${builderId}.jpg`, cardBlob)
         ])
 
         const result = await saveBuilderAssets({
@@ -83,6 +82,8 @@ export default function Page() {
         console.error('Background upload failed:', err)
         setShareLinkStatus('error')
         setShareLinkError(`Failed to create share link: ${err.message || 'Network error'}`)
+      } finally {
+        isUploadingRef.current = false
       }
     }
     

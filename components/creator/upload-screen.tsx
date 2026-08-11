@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { convertHeicToPngIfNeeded } from './heic'
+import { convertHeicToPngIfNeeded, isHeicFile } from './heic'
 
 export function UploadScreen({
   imageSrc,
@@ -27,7 +27,8 @@ export function UploadScreen({
 
   async function handleFiles(files: FileList | null) {
     const rawFile = files?.[0]
-    if (!rawFile || !rawFile.type.startsWith('image/')) return
+    if (!rawFile) return
+    if (!rawFile.type.startsWith('image/') && !isHeicFile(rawFile)) return
     
     const file = await convertHeicToPngIfNeeded(rawFile)
     
@@ -245,7 +246,7 @@ export function UploadScreen({
         <input
           ref={browseInputRef}
           type="file"
-          accept="image/*"
+          accept="image/*,.heic,.heif"
           className="hidden"
           onChange={(e) => handleFiles(e.target.files)}
         />

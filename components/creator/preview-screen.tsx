@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { BuilderCard } from './builder-card'
 import { ProfileFrame } from './profile-frame'
 import type { CreatorState } from './types'
-import { renderProfileFramePng, renderBuilderIdPng } from './export-assets'
+import { renderProfileFrameJpeg, renderBuilderIdJpeg } from './export-assets'
 
 export function PreviewScreen({
   state,
@@ -32,8 +32,8 @@ export function PreviewScreen({
       if (!frameEl || !cardEl) throw new Error('Refs missing')
       
       const [profileDataUrl, cardDataUrl] = await Promise.all([
-        renderProfileFramePng(state, frameEl),
-        renderBuilderIdPng(state, cardEl)
+        renderProfileFrameJpeg(state, frameEl),
+        renderBuilderIdJpeg(state, cardEl)
       ])
       
       setIsGenerating(false)
@@ -48,8 +48,8 @@ export function PreviewScreen({
         return new Blob([array], { type })
       }
 
-      const profileBlob = dataUrlToBlob(profileDataUrl, 'image/png')
-      const cardBlob = dataUrlToBlob(cardDataUrl, 'image/png')
+      const profileBlob = dataUrlToBlob(profileDataUrl, 'image/jpeg')
+      const cardBlob = dataUrlToBlob(cardDataUrl, 'image/jpeg')
 
       // Open Success Modal immediately and pass blobs to parent for uploading
       onExport(profileBlob, cardBlob)

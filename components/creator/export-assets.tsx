@@ -1,7 +1,7 @@
 // components/creator/export-assets.tsx
 'use client'
 
-import { domToPng } from 'modern-screenshot'
+import { domToJpeg } from 'modern-screenshot'
 import { type CreatorState } from './types'
 
 
@@ -99,17 +99,18 @@ async function captureLiveElement({
     },
     fetch: {
       bypassingCache: true, // Bypass cache to avoid cors issues
-    }
+    },
+    quality: 0.9, // 90% quality JPEG is excellent and tiny
   }
 
   // Double execution: First pass forces layout computation and resource fetching
-  await domToPng(element, options)
+  await domToJpeg(element, options)
   
   // Short wait
   await wait(100)
 
   // Second pass: Captures the fully painted state (fixes Safari issues)
-  return await domToPng(element, options)
+  return await domToJpeg(element, options)
 }
 
 // ─── Public API ──────────────────────────────────────────────────────────────
@@ -119,7 +120,7 @@ async function captureLiveElement({
  * Pass `profileFrameEl` — the ref'd wrapper div around <ProfileFrame /> in
  * the preview screen.
  */
-export async function renderProfileFramePng(
+export async function renderProfileFrameJpeg(
   _state: CreatorState,
   profileFrameEl: HTMLElement,
 ): Promise<string> {
@@ -134,7 +135,7 @@ export async function renderProfileFramePng(
  * Pass `builderCardEl` — the ref'd wrapper div around <BuilderCard /> in
  * the preview screen.
  */
-export async function renderBuilderIdPng(
+export async function renderBuilderIdJpeg(
   _state: CreatorState,
   builderCardEl: HTMLElement,
 ): Promise<string> {
@@ -145,13 +146,13 @@ export async function renderBuilderIdPng(
 }
 
 export async function exportProfileFrame(state: CreatorState, profileFrameEl: HTMLElement) {
-  const dataUrl = await renderProfileFramePng(state, profileFrameEl)
-  downloadDataUrl(dataUrl, 'hhgoa-profile-frame.png')
+  const dataUrl = await renderProfileFrameJpeg(state, profileFrameEl)
+  downloadDataUrl(dataUrl, 'hhgoa-profile-frame.jpg')
 }
 
 export async function exportBuilderId(state: CreatorState, builderCardEl: HTMLElement) {
-  const dataUrl = await renderBuilderIdPng(state, builderCardEl)
-  downloadDataUrl(dataUrl, 'hhgoa-builder-id.png')
+  const dataUrl = await renderBuilderIdJpeg(state, builderCardEl)
+  downloadDataUrl(dataUrl, 'hhgoa-builder-id.jpg')
 }
 
 export async function exportBothAssets(
@@ -160,13 +161,13 @@ export async function exportBothAssets(
   builderCardEl: HTMLElement,
 ) {
   const [profileFrame, builderId] = await Promise.all([
-    renderProfileFramePng(state, profileFrameEl),
-    renderBuilderIdPng(state, builderCardEl),
+    renderProfileFrameJpeg(state, profileFrameEl),
+    renderBuilderIdJpeg(state, builderCardEl),
   ])
-  downloadDataUrl(profileFrame, 'hhgoa-profile-frame.png')
+  downloadDataUrl(profileFrame, 'hhgoa-profile-frame.jpg')
   // Small gap so browsers don't coalesce/block the second download.
   await wait(150)
-  downloadDataUrl(builderId, 'hhgoa-builder-id.png')
+  downloadDataUrl(builderId, 'hhgoa-builder-id.jpg')
 }
 
 export function shareOnX(builderId: string) {
