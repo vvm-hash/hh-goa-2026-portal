@@ -59,16 +59,20 @@ export default async function SharePage({ params }: { params: Promise<{ builderI
 
   try {
     const prefix = `records/${builderId}.json`
-    console.log(`\n\n=== [Share Page START] Builder ID: ${builderId} ===`)
-    console.log(`[Share Page] Fetching Blob list for prefix: "${prefix}"`)
+    
+    console.log(`\n\n=== [Diagnostic] Share Page started for Builder ID: ${builderId} ===`)
+    console.log(`[Diagnostic] Share page searching for Builder ID: ${builderId}`)
+    console.log(`[Diagnostic] Share page prefix: ${prefix}`)
     
     const { blobs } = await list({ 
       prefix,
       ...getBlobConfig() 
     })
     
+    console.log(`[Diagnostic] list() returned ${blobs.length} blobs`)
+    
     if (blobs.length === 0) {
-      console.error(`[Share Page FATAL] list() returned 0 blobs for prefix "${prefix}"!`)
+      console.error(`[Diagnostic] FATAL: list() returned 0 blobs for prefix "${prefix}"!`)
       throw new Error(`Builder record not found in Blob storage for ID: ${builderId}`)
     }
 

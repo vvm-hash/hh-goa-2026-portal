@@ -92,10 +92,27 @@ export function SuccessModal({
           return new Blob([array], { type })
         }
 
+        const profileBlob = dataUrlToBlob(profileDataUrl, 'image/png')
+        const cardBlob = dataUrlToBlob(cardDataUrl, 'image/png')
+
         const formData = new FormData()
         formData.append('builderId', builderId)
-        formData.append('profile', dataUrlToBlob(profileDataUrl, 'image/png'), 'profile.png')
-        formData.append('card', dataUrlToBlob(cardDataUrl, 'image/png'), 'card.png')
+        formData.append('profile', profileBlob, 'profile.png')
+        formData.append('card', cardBlob, 'card.png')
+
+        // --- DIAGNOSTIC LOGGING ---
+        const profileSizeMb = (profileBlob.size / (1024 * 1024)).toFixed(2)
+        const cardSizeMb = (cardBlob.size / (1024 * 1024)).toFixed(2)
+        const totalSizeMb = ((profileBlob.size + cardBlob.size) / (1024 * 1024)).toFixed(2)
+        
+        console.log(`[Diagnostic] Profile Blob Size: ${profileSizeMb} MB`)
+        console.log(`[Diagnostic] Card Blob Size: ${cardSizeMb} MB`)
+        console.log(`[Diagnostic] Approx Total Payload Size: ${totalSizeMb} MB`)
+        
+        if (profileBlob.size + cardBlob.size > 4.5 * 1024 * 1024) {
+          console.error('[Diagnostic] Payload exceeds Vercel Server Action limit (4.5 MB).')
+        }
+        // --------------------------
 
         const result = await saveBuilderAssets(formData)
         
